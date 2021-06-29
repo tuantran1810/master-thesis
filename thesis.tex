@@ -23,12 +23,21 @@
 \usepackage{indentfirst}
 \usepackage{pgfgantt}
 \usepackage{amsmath}
+\usepackage{fancybox}
+\usepackage{tabto}
 \selectlanguage{vietnamese}
 
 \begin{document}
 
-\include{./title/outside}
-\include{./title/inside}
+\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\include{./cover/outside}
+\restoregeometry
+
+\include{./cover/inside}
+\include{./cover/mission}
+\include{./cover/thanks}
+\include{./cover/abstract}
+\include{./cover/commitment}
 
 \pagenumbering{gobble}
 \tableofcontents
