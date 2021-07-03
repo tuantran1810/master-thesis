@@ -1,0 +1,30 @@
+\section{\texorpdfstring{Mở đầu}{open}}
+% Nêu lý do chọn đề tài, mục đích, đối tượng và phạm vi nghiên cứu, ý nghĩa khoa học và ý nghĩa thực tiễn của đề tài.
+
+Trong những năm gần đây, với sự bùng nổ và phát triển cực kì mạnh mẽ của ngành công nghệ thông tin và đặc biệt là ngành trí tuệ nhân tạo, ngày càng nhiều các sáng kiến đôc đáo đã được sinh ra. Trong đó, việc tạo sinh dữ liệu tự động sử dụng trí tuệ nhân tạo đã đánh dấu một bước chuyển mình mới và cực kì sáng tạo.
+
+So với các mô hình truyền thống với mục đích phân lớp, phân đoạn, gom nhóm, và dự đoán theo chuỗi thời gian, nhóm các mô hình tạo sinh dữ liệu được sinh ra với mục đích hoàn toàn khác. Trong khi các mô hình truyền thống cung cấp thông tin đã hiện hữu trong thế giới thực (bài toán nhận diện vật thể, OCR, phân đoạn hình ảnh,...) hoặc các dự đoán về các sự kiện sẽ xảy ra (dự đoán giá chứng khoán, dự đoán diễn biến dịch COVID-19,...), thì các mô hình tạo sinh dữ liệu lại cố gắng tạo ra dữ liệu mới, chưa từng tồn tại trong thế giới thực.
+
+Một số ví dụ về việc tạo sinh dữ liệu bằng trí tuệ có thể kể đến như: sử dụng mạng LSTM để sáng tác nhạc, hay công trình chuyển đổi phong cách hình ảnh (style transfer) của giáo sư Fei Fei Li và cộng sự \cite{Johnson2016Perceptual}, hay trang web \url{https://thispersondoesnotexist.com}, được tạo nên để tạo sinh những gương mặt người chưa từng tồn tại bằng mạng StyleGAN2 \cite{stylegans}.
+
+Bài toán tạo sinh dữ liệu dựa trên những nguồn dữ liệu có tính chất khác nhau đã và đang trở thành xu thế trong những năm trở lại đây. Đây là bài toán có tính cấp bách, mang lại giá trị cao về mặt kiến thức cho ngành trí tuệ nhân tạo nói riêng và giá trị về mặt kinh tế, công nghệ chung cho toàn xã hội xã hội. Bên cạnh đó, việc tạo sinh dữ liệu về con người đã đạt được những tiến bộ vượt bậc, đặc biệt là tạo sinh dữ liệu hình ảnh khuôn mặt người.
+
+Kiến trúc mạng Generative Adversarial Network \cite{gans_base} ra đời vào năm 2014 đã đánh dấu một bước chuyển mình mới cho ngành trí tuệ nhân tạo. Kiến trúc này giúp cho việc tạo sinh dữ liệu được thực hiện một cách hiệu quả và chính xác hơn. Dựa trên nền tảng đó, các nghiên cứu về việc tạo sinh ảnh gương mặt người cũng được tiến hành và ngày càng có những bước tiến mới.
+
+\subsection{\texorpdfstring{Lý do chọn đề tài}{Why}}
+Việc tạo sinh hình ảnh khuôn mặt người dựa trên tiếng nói đang là nhu cầu cần thiết trong ngành giải trí, phim ảnh, hoạt hình. Nếu xây dựng được một hệ thống tạo hình khuôn mặt tốt, chi phí sản xuất phim sẽ được giảm thiểu đáng kể vì phần hóa trang có thể được cắt bớt, phần kĩ xảo có thể được đơn giản hóa, diễn viên không phải quá mạo hiểm trong các cảnh quay nguy hiểm. Đối với hoạt hình, phần hình vẽ có thể được hỗ trợ rất nhiều bởi hệ thống tạo sinh khuôn mặt, từ đó có thể giảm bớt chi phí vẽ hình. Bên cạnh đó, ta có thể tạo sinh gương mặt đại diện trong trường hợp người nói không muốn lộ diện. Ngoài những ứng dụng rất hữu ích trong thực tiễn như đã nêu ở trên, bài toán tạo sinh gương mặt còn là một bài toán khó, thú vị và mới mẻ, còn nhiều hướng đi chưa được khai phá và cực kì tiềm năng trong tương lai.
+
+\subsection{\texorpdfstring{Mục đích của nghiên cứu}{Target}}
+Nghiên cứu nhằm mục đích kiểm nghiệm các mô hình được đề xuất trong các nghiên cứu gần đây, tìm hiểu các phương pháp tiền xử lý dữ liệu và trích xuất đặc trưng mới giúp mô hình dễ học hơn, tạo sinh ra hình ảnh chân thật và có độ chính xác cao, khó bị nhận biết bởi con người.
+
+\subsection{\texorpdfstring{Đối tượng nghiên cứu}{Objective}}
+Đối tượng nghiên cứu của Luận văn là các cách tiếp cận, các phương pháp mô hình hóa bài toán, các mạng học máy, học sâu, mạng GANs và các phương pháp tạo sinh dữ liệu từ mạng GANs, các cấu trúc Residual Encoder-Decoder, bên cạnh đó là các phương pháp kết hợp đặc trưng hình ảnh, âm thanh có xem xét đến thứ tự thời gian để tạo sinh hình ảnh mới.
+
+\subsection{\texorpdfstring{Phạm vi nghiên cứu}{Research}}
+Phạm vi nghiên cứu của Luận văn là tạo sinh ảnh giới hạn trong vùng mặt của người, dữ liệu mẫu được cung cấp ban đầu phải là ảnh rõ ràng của khuôn mặt người, đoạn âm thanh được cung cấp cũng phải là âm thanh rõ ràng của tiếng nói.
+
+\subsection{\texorpdfstring{Ý nghĩa khoa học}{ScientificMeaning}}
+Đóng góp cho sự phát triển chung của xu hướng tạo sinh dữ liệu mới dựa trên các tính chất của dữ liệu ban đầu. Việc tìm ra phương pháp giải quyết tốt bài toán sẽ tạo nên tảng để giải quyết những bài toán xa hơn, phức tạp hơn như: tạo sinh nửa người trên, tạo sinh toàn bộ cơ thể người, hay tạo sinh cả một bối cảnh trong phim. Đề tài giúp kiểm chứng, hiện thực, thử nghiệm các phương pháp hiện có trong các bài nghiên cứu gần đây, so sánh và tổng hợp để cố gắng tìm ra hướng đi mới, đóng góp thêm phương pháp mới cho việc tạo sinh ảnh. Đồng thời, các phương pháp tạo sinh dữ liệu cũng giúp làm giàu dữ liệu để huấn luyện, kiểm thử cho các mô hình học máy, học sâu khác.
+
+\subsection{\texorpdfstring{Ý nghĩa thực tiễn}{RealLifeMeaning}}
+Giải quyết thành công vấn đề này đem lại giá trị to lớn về mặt công nghệ, kinh tế và xã hội. Chúng ta có thể tái hiện lại gương mặt người đang nói ở nhiều thứ tiếng khác nhau, tạo sinh khuôn mặt người đại diện trong các hội nghị trực tuyến, tích hợp vào các trò chơi điện tử để làm chúng trở nên chân thực hơn, truyền video trong điều kiện băng thông giới hạn, giả lập trợ lý ảo có hình dáng con người,... Đối với ngành truyền thông, nó có thể tạo ra biên tập viên ảo. Đối với ngành điện ảnh, giải trí, sáng tạo nội dung nó cũng có giá trị ứng dụng khi giúp giảm bớt áp lực lên khâu hóa trang, kỹ xảo.

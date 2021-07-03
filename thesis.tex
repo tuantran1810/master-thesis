@@ -25,6 +25,8 @@
 \usepackage{amsmath}
 \usepackage{fancybox}
 \usepackage{tabto}
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
 \selectlanguage{vietnamese}
 
 \begin{document}
@@ -44,13 +46,23 @@
 \listoffigures
 
 \pagenumbering{arabic}
-\include{./content/I}
-\include{./content/II}
-\include{./content/III}
-\include{./content/IV}
-\include{./content/V}
-\include{./content/VI}
-\include{./content/VII}
+
+\include{./content/brief}
+\include{./content/open}
+\include{./content/overview}
+\include{./content/target_and_mission}
+\include{./content/base_knowledge}
+\include{./content/methodology}
+\include{./content/result}
+\include{./content/conclusion}
+
+
+% \include{./content/I}
+% \include{./content/III}
+% \include{./content/IV}
+% \include{./content/V}
+% \include{./content/VI}
+% \include{./content/VII}
 \bibliographystyle{unsrt}
 \bibliography{references}
 \appendix
