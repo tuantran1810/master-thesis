@@ -156,6 +156,16 @@ Mạng nơ ron hồi quy tích chập gồm hai phần chính:
 
 \subsubsection{Mạng nơ ron nối tắt (Residual Network)}
 
+Về mặt kiến trúc, một mạng nơ ron truyền thẳng có khả năng xấp xỉ mọi hàm với dữ liệu huấn luyện được cung cấp, miễn là không vượt quá sức chứa của nó. Tuy nhiên, xấp xủ tốt dữ liệu không phải là mục tiêu duy nhất của một mạng nơ ron, mà như đã nói ở trên, chúng ta cần một mô hình có khả năng tổng quá hóa dữ liệu tốt. Nhờ vào mạng AlexNet, các kiến trúc mạng nơ ron tích chập được chú ý, và từ đó trở đi, các mạng nơ ron được ra đời ngày càng nhiều và chiều sâu của mạng cũng ngày một lớn hơn. Trong khi AlexNet chỉ có 5 lớp tích chập, thì mạng VGG ra đời sau đó có đến 19 lớp, mạng GoogleNet có đến 22 lớp. Như đã nói ở trên, việc tăng độ sâu của mạng có thể làm xảy ra hiện tượng triệt tiêu đạo hàm
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{./content/materials/residual_orig.png}
+    \caption{Cấu trúc của mạng nơ ron nối tắt. Hình ảnh được lấy từ bài báo gốc \cite{residual}}
+\end{figure}
+
+Như vậy, nhằm mục đích tạo ra một mạng tích chập có độ sâu lớn nhưng vẫn đảm bảo mạng không bị tình trạng triệt tiêu đạo hàm, cấu trúc mạng nơ ron nối tắt ra đời. Ý tưởng của mạng nối tắt, như cái tên của nó là sử dụng một đường kết nối để nối tắt qua một hay nhiều lớp tích chập, nhằm đem đặc trưng từ các lớp trước để kết họp với các đặc trưng sau khi được rút trích bởi mạng tích chập trong khối nối tắt. Kiến trúc này giúp cho kiến trúc sâu hơn và ít nhất là không kém hơn các kiến trúc nông. Hơn nữa, với kiến trúc này, các lớp sâu phía trong có thêm thông tin từ các lớp ngoài nên sẽ có sự điều chỉnh trọng số hiệu quả hơn.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=15cm]{./content/materials/residual.png}
@@ -185,19 +195,34 @@ Hàm Tanh nhận vào một số thực và trả về giá trị trong khoảng
     \caption{Hàm Sigmoid}
 \end{figure}
 
-Nhìn vào đồ thị của hàm Sigmoid ta thấy, nếu $x$ càng về âm thì $\sigma(x)$ càng tiệm cận về 0 và nếu $x$ càng về dương thì $\sigma(x)$ càng tiến gần đến 1. Như vậy, khi sử dụng Sigmoid làm hàm kích hoạt,
+Nhìn vào đồ thị của hàm Sigmoid ta thấy, nếu $x$ càng về âm thì $\sigma(x)$ càng tiệm cận về 0 và nếu $x$ càng về dương thì $\sigma(x)$ càng tiến gần đến 1. Tại điểm $x=0$, hàm Sigmoid cho giá trị đạm hàm cực đại và chỉ xấp xỉ bằng 0.3. Với các giá trị đạo hàm khi $x$ càng về âm và càng về dương, đạo hàm của hàm Sigmoid giảm dần về 0. Điểu này gây ra một số bất lợi khi sử dụng Sigmoid để làm hàm kích hoạt:
+
+\begin{itemize}
+    \item \textbf{Hàm Sigmoid dễ bị bão hòa:} Như đã nói ở trên, đạo hàm của hàm Sigmoid có giá trị gần 0 khi $x$ quá lớn hoặc quá nhỏ. Trong thực tế, nếu mạng nhận được giá trị khởi động rất lớn hoặc rất nhỏ, mạng này sẽ cho ra giá trị cuối cùng cũng rất lớn hoặc rất nhỏ. Trong lúc lan truyền ngược, đạo hàm của nó sẽ đi qua lớp Sigmoid, như ta đã thấy, nếu $x$ rất lớn hoặc rất nhỏ, đạo hàm của Sigmoid sẽ về gần như bằng 0, và trọng số sẽ được cập nhật rất ít, mạng sẽ rất lâu hội tụ.
+    \item \textbf{Hàm Sigmoid dễ bị triệt tiêu đạo hàm:} Ngoài ra, trong trường hợp ngược lại, nếu mạng nhận được trọng số vừa phải, thì lúc này, trong lúc đạo hàm, hàm Sigmoid vẫn cho giá trị đạo hàm rất nhỏ (cao nhất là gần 0.3 tại điểm $x=0$). Nếu sử dụng nhiều lớp Sigmoid trong một mạng học sâu, hiện tượng triệt tiêu đạo hàm sẽ xảy ra.
+    \item \textbf{Hàm Sigmoid không đi qua trục tọa độ:} Vì vậy, việc cập nhật các trọng số  của mạng trong lúc lan truyền ngược sẽ luôn đi theo một hướng cùng dương hoặc cùng âm, làm mất đi sự linh hoạt của việc cập nhật trọng số và làm cho mạng khó hội tụ hơn.
+\end{itemize}
+
+Trong thực tế, hàm Sigmoid chỉ được sử dụng cho lớp sau cùng của mạng, và được dùng để dự đoán xác suất cho một sự kiện trong bài toán. Nên hạn chế việc sử dụng nhiều lần mạng Sigmoid trên cùng một đường lan truyền vì nó sẽ làm triệt tiêu đạo hàm.
 
 \paragraph{Hàm Tanh}\mbox{}\\
 
-Hàm Tanh nhận vào một số thực và trả về giá trị trong khoảng (-1, 1). Hàm Tanh được biểu diễn bởi hàm số sau:
+Hàm Tanh nhận vào một số thực và trả về giá trị trong khoảng (-1, 1). Hàm Tanh và đạo hàm của nó được biểu diễn bởi hàm số sau:
 
-
+\begin{equation}
+\begin{split}
+    & tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=2*\sigma(2x)-1\\
+    & tanh'(x)=1-tanh^2(x)\\
+\end{split}
+\end{equation}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=9cm]{./content/materials/tanh.png}
     \caption{Hàm Tanh}
 \end{figure}
+
+Nhìn vào đồ thị hàm Thanh ta thấy, hàm Tanh cũng có các tính chất tương tự như hàm Sigmoid: dễ bị bão hòa, dễ bị triệt tiêu đạo hàm. Nhưng nó lại có tính chất đi qua trục tọa độ. Do đó, việc cập nhật trọng số sẽ dễ dàng hơn đối với hàm Tanh. Trên thực tế, giống như hàm Sigmoid, hàm Tanh cũng được dùng để đạt ở những lớp cuối cùng của mạng và cũng không nên đặt nhiều hàm Tanh trên cùng một đường lan truyền để tránh hiện tượng triệt tiêu đạo hàm.
 
 \paragraph{Hàm điểu chỉnh tuyến tính (Rectified Linear Units - ReLU)}\mbox{}\\
 
@@ -222,16 +247,72 @@ Hàm điều chỉnh tuyến tính là hàm kích hoạt đơn giản nhưng man
 
 Theo như hàm số trên, ta thấy ReLU chỉ cho phép các giá trị lớn hơn 0 đi qua nó. Như vậy, so với hàm Sigmoid và hàm Tanh, ReLU sẽ không xuất hiện vấn đề triệt tiêu đạo hàm. Đồng thời, việc tính toán cho hàm ReLU cũng diễn ra nhanh hơn đáng kể. Tuy nhiên, ReLU cũng có một nhược điểm là nếu $x$ có giá trị nhỏ hơn 0, nó sẽ được hàm ReLU cho kết quả bằng 0. Vì vậy, giá trị tính toán tại $x$ sẽ không có ý nghĩa cho các lớp tiếp theo, và các hệ số học tương ứng từ đó cũng không được cập nhật trong quá trình lan truyền ngược. Hiện tượng này gọi là \textit{Dying ReLU}.
 
+\subsection{Cấu trúc mạng tạo sinh đối nghịch (Generative Adversarial Networks - GANs)}
 
+\subsubsection{Mạng GANs}
+Vào năm 2014, Ian Goodfellow và cộng sự đã xuất bản một bài báo \cite{gans_base} giới thiệu về mạng tạo sinh đối nghịch (GANs). Mạng GANs đã cho phép máy tính có thể tạo sinh ra dữ liệu chân thật, không phải chỉ bằng một mạng nơ ron, mà là hai mạng nơ ron độc lập. Tuy mạng GANs không phải là mạng nơ ron đầu tiên có chức năng tạo sinh dữ liệu, nhưng kết quả tạo sinh nó mang lại thì có chất lượng vượt xa tất cả các công bố trước đây. Nó đã đạt được những kết quả mà trước đây, người ta không nghĩ là mạng nơ ron học sâu có thể làm được. Mạng GANs có thể tạo sinh hình ảnh giả với độ chân thật cao, và có thể so sánh với máy chụp ảnh, biến những hình vẽ thành ảnh chụp nghệ thuật, hay biến những thước phim có hình ảnh của những con ngựa thành những thước phim có hình ảnh của những con ngựa vằn. Và nó làm những điều này mà không cần đến những dữ liệu được đánh nhãn.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15cm]{./content/materials/gans-faces.png}
+    \caption{Việc tạo sinh mặt người dùng mạng GANs qua các năm \cite{gans_faces}}
+\end{figure}
 
+Mạng tạo sinh đối nghịch (GANs) là một loại mạng thần kinh học sâu dùng để tạo sinh dữ liệu mà nó được học. Mạng tạo sinh đối nghịch bao gồm hai mạng nhỏ hơn là mạng tạo sinh (Generator) và mạng phân biệt (Discriminator). Mạng tạo sinh được huấn luyện để sinh ra dữ liệu mới, trong khi mạng phân biệt được huấn luyện để phân biệt dữ liệu nào là dữ liệu thật được lấy từ tập dữ liệu huấn luyện, dữ liệu nào là dữ liệu giả được sinh ra bởi mạng tạo sinh. Ví dụ, chúng ta muốn tạo sinh các bức họa có phong cách vẽ giống với Leonardo da Vinci, ta có thể dùng tập dữ liệu các bộ tranh vẽ của Leonardo da Vinci để huấn luyện cho mạng. Mạng tạo sinh sẽ cố gắng học cách tạo sinh ra các bức họa giống với phong cách của Leonardo da Vinci nhất, trong khi mạng phân biệt cố  học cách phân biệt các bức họa thật giả, với ảnh thật là các ảnh lấy trực tiếp từ dữ liệu huấn luyện, còn ảnh giả là các bức ảnh được tạo ra bởi mạng tạo sinh.
 
-\subsection{Phương pháp chú ý (Attention)}
+\subsubsection{Cách hoạt động của mạng GANs}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15cm]{./content/materials/gans-pure.png}
+    \caption{Cấu trúc mạng GANs thông thường}
+    \label{fig:pure-gans}
+\end{figure}
 
-\subsection{Cấu trúc mạng GAN}
+Như vậy, mục đích của mạng tạo sinh là tạo ra những dữ liệu có cùng tính chất với dữ liệu được đưa vào để huấn luyện cho nó, những dữ liệu được sinh ra phải chân thật đến nỗi không thể phân biệt được với dữ liệu thật. Mạng tạo sinh có thể được xem như một phiên bản ngược của mạng nhận diện (Object Recognition Networks), trong khi mạng nhận diện có chức năng học những chi tiết, đặc trưng trên những tấm ảnh nó được học qua để tìm ra được vật thể trên ảnh. Thì với mạng tạo sinh, thay vì học các chi tiết, đặc trưng của vật thể, nó học cách để tạo ra các chi tiết, đặc trưng đó với đầu vào chỉ đơn giản là một vec tơ được tạo sinh ngẫu nhiên bằng phân phối chuẩn (đói với mạng GANs truyền thống). 
 
-\subsection{Đặc trưng dữ liệu tiếng nói}
+Việc học cách tạo sinh dữ liệu được mạng tạo sinh thực hiện nhờ vào phản hồi của mạng phân biệt Discriminator. Mục đích của mạng phân biệt là tìm cách phân biệt dữ liệu đầu vào cũa nó, dữ liệu nào được tạo sinh và dữ liệu nào là dữ liệu thật. Do vậy, mỗi lần mạng phân biệt bị đánh lừa bởi mạng tạo sinh (nhận nhầm dữ liệu tạo sinh là dữ liệu thật), mạng tạo sinh biết là nó đang làm đúng. Và ngược lại, mỗi lần mạng phân biệt bắt được đúng dữ liệu giả, thông tin này sẽ được đưa về cho mạng tạo sinh và nó sẽ phải cập nhật lại trọng số để tạo sinh dữ liệu chân thật hơn.
 
-\subsection{Đặc trưng dữ liệu hình ảnh khuôn mặt}
+Mạng phân biệt cũng dần được cải thiện qua mỗi lần nó phân biệt sai dữ liệu. Với hàm mất mát Binary Cross Entropy, nó tính toán được khoảng cách từ dự đoán của chính nó đến kết quả thực và từ đó thay đổi trọng số của mạng để dự đoán của nó ngày càng phù hợp hơn với phân phối dữ liệu. Cứ như vậy, mạng tạo sinh càng ngày càng sinh ra dữ liệu chân thực hơn nhằm mục đích đánh lừa mạng phân biệt, nhưng mạng phân biệt cũng ngày càng trở nên tốt hơn trong việc phân biệt dữ liệu thật - giả.
 
-\subsection{Tương quan giữa tiếng nói và khẩu hình miệng}
+\subsubsection{Huấn luyện mạng GANs}
+
+Do mạng GANs là tổng hợp của hai mạng tạo sinh và mạng phân biệt, nên cách huấn luyện mạng cũng có sự khác biệt so với các loại mạng khác. Khi huấn luyện mạng GANs, ta sẽ đi huấn luyện cho cả hai mạng tạo sinh và phân biệt cùng một lúc. Chi tiết các bước huấn luyện một mạng GANs truyền thống được miêu tả ở Hình \ref{fig:pure-gans} như sau:
+
+Với mỗi lượt huấn luyện, ta lần lượt thực hiện:
+\begin{itemize}
+    \item Huấn luyện mạng phân biệt:
+    \begin{itemize}
+        \item Lấy một vài mẫu dữ liệu thật ($x$) từ tập dữ liệu huấn luyện
+        \item Lấy mẫu ngẫu nhiên dựa trên phân phối chuẩn để tạo ra véc tơ $z$, đưa véc tơ $z$ vào mạng tạo sinh để tạo ra dữ liệu giả ($x^*$)
+        \item Sử dụng mạng phân biệt để phân biệt $x$ và $x^*$
+        \item Tính toán hàm mất mát của mạng phân biệt và thực hiện lan truyền ngược trên mạng phân biệt nhằm tối thiểu hóa hàm mất mát
+    \end{itemize}
+
+    \item Huấn luyện mạng tạo sinh:
+    \begin{itemize}
+        \item Lấy mẫu ngẫu nhiên dựa trên phân phối chuẩn để tạo ra véc tơ $z$, đưa véc tơ $z$ vào mạng tạo sinh để tạo ra dữ liệu giả ($x^*$)
+        \item Sử dụng mạng phân biệt để phân biệt dữ liệu giả vừa được tạo sinh
+        \item Tính toán hàm mất mát của mạng phân biệt và thực hiện lan truyền ngược trên mạng tạo sinh nhằm tối đa hóa hàm mất mát
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Điểm cân bằng trong huấn luyện mạng GANs}
+
+Vậy khi nào thì việc huấn luyện mạng GANs nên được dừng lại? Làm sao và dựa vào dấu hiệu nào để biết được mạng GANs đã hội tụ? Với các mạng nơ ron thông thường khác, ta thường có các thông số rõ ràng và những mục tiêu rõ ràng để biết khi nào thì dừng việc huấn luyện. Ví dụ như với mạng phân lớp, ta có thể chia dữ liệu huấn luyện thành tập để học và tập để kiểm thử. Khi giá trị hàm mất mát trên tập kiểm thử bắt đầu tệ đi là lúc ta nên dừng quá trình huấn luyện mạng vì mạng đã bắt đầu học thuộc dữ liệu. Trong mạng GANs, hai mạng tạo sinh và phân biệt có hai mục tiêu trái ngược nhau. Bên tạo sinh cố gắng tạo ra dữ liệu thật chân thật để đánh lừa bên phân biệt, trong khi bên phân biệt ngày càng cải thiện bản thân để phân biệt thật - giả tốt hơn. Như vậy, nếu bên tạo sinh có giá trị hàm mất mát thấp hơn, thì giá trị hàm mất mát của bên phân biệt sẽ cao lên và ngược lại.
+
+Như vậy, ta có thể thấy đây là một trò chơi có tổng bằng 0 (zero-sum game), ở đó, bên này được bao nhiêu thì bên kia mất bấy nhiêu. Tất cả mọi zero-sum game đều có một điểm cân bằng Nash (Nash equilibrium) mà tại đó, cả hai bên đều không thể làm gì để cải thiện tình hình chung. Mạng GANs đạt được trạng thái cân bằng Nash khi những điều kiện sau đây được thỏa mãn:
+\begin{itemize}
+    \item Mạng tạo sinh có thể tạo ra dữ liệu giả không thể phân biệt được với dữ liệu thật
+    \item Mạng phân biệt có thể dự đoán một cách ngẫu nhiên một mẫu dữ liệu là thật hay giả (độ chính xác của bộ phân biệt đạt 50\%)
+\end{itemize}
+Khi trạng thái này xảy ra, mạng phân biệt không còn khả năng để dự đoán mẫu dữ liệu nào là thật, mẫu dữ liệu nào là giả, vì vậy nó không thể giúp ích gì thêm cho mạng tạo sinh nữa. Mạng tạo sinh cũng không còn khả năng cải thiện hơn, vì dữ liệu nó sinh ra đã không còn có thể được nhận diện bởi mạng phân biệt. Vì vậy, khi ở trạng thái này, mạng GANs đã hội tụ và ta có thể ngừng việc huấn luyện tại đây.
+
+Nhưng trên thực tế, trạng thái cân bằng Nash dường như không thể đạt được bởi sự phức tạp và rộng lớn của không gian dữ liệu, với số chiều rất lớn và là tập hơn của các hàm tuyến tính, hàm kích hoạt, lấy mẫu, và đôi khi là hàm xác suất,... tất cả những hàm đó tạo nên một không gian không lồi, và với việc sử dụng các giải thuật tối ưu như SGD và Adam, đôi khi ta chỉ tìm được các điểm tối ưu cục bộ. Trên thực tế, sự hội tụ của mạng GANs vẫn còn là một câu hỏi mở cho ngành trí tuệ nhân tạo.
+
+\subsection{Đặc trưng MFCC (mel-frequency cepstrum coefficients) của dữ liệu âm thanh}
+
+Đầu tiên, ta sẽ đi qua định nghĩa về cepstrum. Cepstrum là một đặc trưng quan trọng để phân biệt các nguyên âm trong xử lý tiếng nói. Về mặt ý nghĩa, cepstrum giúp phân biệt các nguyên âm do nó là đặc trưng được sinh ra từ tần số của âm thanh. Khi con người cất tiếng nói, một nguyên âm nào đó khi phát ra sẽ được cuốn họng rung để tạo ra tần số cơ bản, khoang mũi, miệng, lưỡi và môi giống như các bộ lọc âm thanh để tạo ra các tần số mới, và các đỉnh cực đại của các tần số khác nhau trong tín hiệu tiếng nói quyết định âm được nói ra là âm gì. Để chuyển sự biểu diễn âm thanh từ miền thời gian sang miền tần số, người ta thường dùng biến đổi Fourier. Một âm thanh tiếng nói khi được biến đổi Fourier sẽ tạo ra một hàm số thể hiện biên độ của các tần số khác nhau. Đồ thị này sẽ có các điểm cực đại, và các điểm cực đại này là đặc trưng cho nguyên âm vừa được nói ra (như đã nói ở trên). Khi hàm biến đổi Fourier này được đưa về dạng hàm trơn, ta gọi đó là cepstrum. Các nguyên âm khác nhau thì mỗi nguyên âm sẽ có một dạng biểu diễn đồ thị cepstrum khác nhau, phân biệt khá rõ ràng về số đỉnh và khoảng cách giữa các đỉnh.
+
+Tai nghe của con người có một đặc điểm quan trọng, chúng hoạt động như những bộ lọc âm thanh, nhạy cảm hơn với các âm ở tần số thấp và ít nhạy hơn với âm thanh ở tần số cao. Vì vậy, bộ lọc Mel ra đời nhằm xử lý các âm thanh tiếng nói để trích xuất các đặc trưng sao cho phù hợp với cách nghe của con người. Theo đó, các giá trị tần số nhỏ hơn 1kHz sẽ được lọc với bộ lọc tuyến tính, điều này phù hợp với lý thuyết là tai người nhạy cảm với âm thanh có tần số thấp. Dải tần số trên 1kHz được lọc với bộ lọc phi tuyến và bộ lọc thưa dần khi lên đến các tần số cao hơn.
+
+MFCC là một đặc trưng âm thanh và được tạo ra nhằm mục đích duy nhất là dùng cho giọng nói con người. Vì vậy, MFCC thường được sử dụng trong các bài toán nhận dạng giọng nói hay phân loại giọng nói. MFCC sẽ cho ra kết quả là các hệ số của cepstrum được lấy từ bộ lọc Mel sau khi xử lý phổ của âm thanh giọng nói.
