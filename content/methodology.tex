@@ -24,14 +24,41 @@ Sự thay đổi của hình ảnh được quyết định phần nhiều bởi
 
 \subsection{Mô hình hóa bài toán}
 
+Như phân tích ở phần trên, âm thanh sẽ đóng góp phần lớn vào việc tạo sinh chuyển động cho khuôn mặt. Tuy nhiên, ta thấy dữ liệu dạng sóng biên độ - thời gian của âm thanh dường như không có mối liên hệ tốt với chuyển động trên gương mặt. Vì thế, một bước trích xuất đặc trưng âm thanh để tạo ra một đặc trưng gần gũi hơn với những chuyển động tương ứng trên gương mặt là một bước cần thiết để việc tạo sinh hình ảnh có thể tạo ra những hình ảnh chất lượng tốt và có được những chuyển động chính xác. Do đó, ta sẽ chuyển âm thanh thành một dạng thể hiện khác, đó là các cột mốc trên gương mặt (Facial Landmark). Cột mốc trên mặt gồm 68 điểm trên không gian hai chiều. Mỗi điểm đánh dấu một vị trí trên gương mặt.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm]{./content/materials/landmark_intro.png}
+    \caption{Các điểm cột mốc trên khuôn mặt. Hình ảnh được lấy từ bài báo \cite{landmark}}
+\end{figure}
+
+Như vậy, từ đoạn âm thanh có chứa tiếng nói và hình ảnh ban đầu, ta sẽ tạo sinh ra một chuỗi cột mốc khuôn mặt để thay thế cho âm thanh làm căn cứ cho những chuyển động trên gương mặt cho phần mạng phía sau. Cấu trúc tổng quát của hệ thống được thế hiện ở Hình \ref{fig:common_architecture}.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=15cm]{./content/materials/common_architecture.png}
-    \caption{Cấu trúc chung của hệ thống}
+    \caption{Cấu trúc tổng quát của hệ thống}
+    \label{fig:common_architecture}
 \end{figure}
+
+Theo như kiến trúc được thể hiện ở Hình \ref{fig:common_architecture}, hệ thống sẽ trích xuất đặc trưng cột mốc $l_{input}$ trên gương mặt trong hình mẫu $i_{input}$. Sau đó, đặc trưng MFCC sẽ được trích xuất từ âm thanh đầu vào. Đặc trưng MFCC và $l_{input}$ sẽ được đưa vào mạng tạo sinh cột mốc gương mặt (Landmark Decoder). Mạng này kết hợp hai đặc trưng trên với nhau để dự đoán chuỗi các cột mốc gương mặt người khi nói đoạn âm thanh được đưa vào hệ thống ($p_{landmark}$). Từ thời điểm này, âm thanh không còn được sử dụng để tạo sinh hình ảnh mặt người, chuỗi những điểm cột mốc gương mặt $p_{landmark}$ sẽ thay thế cho đặc trưng âm thanh trong những bước xử lý tiếp theo. Như vậy, ta đã tách rời được dữ liệu âm thanh so với phần tạo sinh hình ảnh, và cung cấp cho phần mạng phía sau thông tin dễ học hơn, giàu thông tin hữu ích hơn và ít nhiễu hơn. 
+
+Phần tiếp theo trong hệ thống là cặp mạng tạo sinh (Generator) và phân biệt (Discriminator) tạo nên mạng GANs như đã trình bày ở phần \ref{sec:base_knowledge_gans}. Tuy nhiên, đây không phải là mạng GANs truyền thống mà là mạng GANs có điều kiện (Conditional GANs). Thay vì tạo sinh dữ liệu bằng một véc tơ được sinh ra ngẫu nhiên theo phân phối chuẩn, mạng GANs có điều kiện dựa vào một điều kiện đầu để tạo sinh dữ liệu. Trong luận văn này, mạng GANs có điều kiện tạo sinh dữ liệu với điều kiện đầu vào là $i_{input}$, $l_{input}$ và $p_{landmark}$.
+
+Bài toán mà mạng tạo sinh phải giải là đối với mỗi khung ảnh được tạo sinh để phù hợp với giọng nói được cho, ta phải thay đổi hình ảnh gốc $i_{input}$ ở những vị trí nào, và tại vị trí đó, ta phải thay đỏi nó như thế nào để sinh ra được hình ảnh mới? Mạng tạo sinh hình ảnh với đầu vào là hình ảnh mẫu $i_{input}$, cột mốc của gương mặt của hình ảnh mẫu $l_{input}$ và chuỗi cột mốc gương mặt vừa được tạo sinh $p_{landmark}$ có chức năng tạo sinh ra hai chuỗi dữ liệu $p_{att}$ và $p'_{image}$ tương ứng để trả lời cho câu hỏi trên. Chuỗi hình ảnh $p_{att}$ và $p'_{image}$ có cùng chiểu dài và kích thước hình ảnh. Chuỗi hình ảnh $p_{att}$ thể hiện những điểm cần thay đổi trên ảnh gốc và mức độ thay đổi tại điểm đó. Chuỗi dữ liệu còn lại là chuỗi $p'_{image}$ thể hiện những thay đổi trên ảnh gốc để phù hợp với tiếng nói trong âm thanh. Chuỗi $p'_{image}$ có cấu trúc hình ảnh là gương mặt người, có sự thay đổi theo trục thời gian tương ứng với những chuyển động trên gương mặt để phù hợp với giọng nói. Tuy nhiên đây không phải là hình ảnh hoàn chỉnh của gương mặt, chỉ một vài chi tiết cần thiết trên chuỗi $p'_{image}$ được lấy ra và ghép vào ảnh gốc $i_{input}$ để tạo ra hình ảnh cuối cùng. Cũng vì vậy, $p'_{image}$ là chuỗi hình ảnh được sinh ra để cho ta biết hình ảnh gốc nên thay đổi như thế nào. 
+
+Cuối cùng, ta cần phải kết hợp hình ảnh ban đầu $i_{image}$ và chuỗi hình ảnh vừa được sinh ra là $p'_{image}$ và $p_{att}$ lại để tạo thành chuỗi hình ảnh hoàn chỉnh $p_{image}$. Có thể gọi $p_{att}$ là một mặt nạ chú ý (attention map), mặt nạ này có giá trị các điểm ảnh trong khoảng từ 0 đến 1. Với điểm ảnh càng gần về 0, điểm ảnh cùng vị trí trong $i_{input}$ càng được sử dụng nhiều, điểm ảnh cùng vị trí trong $p'_{image}$ càng ít được sử dụng. Và ngược lại, nếu điểm ảnh trong $p_{att}$ càng gần về 1, điểm ảnh cùng vị trí trong $i_{input}$ càng ít được sử dụng, điểm ảnh cùng vị trí trong $p'_{image}$ càng được sử dụng nhiều. Công thức tạo thành $p_{image}$ được biểu diễn như sau:
+
+\begin{equation}
+    p_{image}=p_{att}*p'_{image}+(1-p_{att})*i_{input}
+\end{equation}
+
+Hình ảnh hoàn chỉnh được tạo sinh $p_{image}$ sau đó được đem đi so sánh với chuỗi hình ảnh trong video gốc để tính giá trị mất mát L1 cho chuỗi hình ảnh tạo sinh. Giá trị mất mát này được lan truyền ngược để cập nhật các trọng số trong mạng tạo sinh. Chuỗi hình ảnh hoàn chỉnh cũng được đưa vào bộ phân biệt (Discriminator) để bộ phân biệt dự đoán xem chuỗi hình ảnh này là ảnh được tạo sinh (chuỗi hình ảnh giả) hay chuỗi hình ảnh này là hình ảnh được lấy từ tập dữ liệu thật, sai sót của bộ phân biệt được biểu diễn bằng hàm Binary Cross Entropy. Đồng thời bộ phân biệt cũng dựa vào chuỗi hình ảnh được đưa vào và cột mốc gương mặt của ảnh mẫu $l_{input}$ để cố gắng sinh ra một chuỗi cột mốc gương mặt tương ứng với chuỗi hình ảnh $p_{image}$ được đưa vào mạng. Chuỗi cột mốc gương mặt vừa được sinh ra này sẽ được so sánh với chuỗi cột mốc gương mặt được rút trích trực tiếp từ chuỗi hình ảnh trong video gốc. Sự sai khác trong hai chuỗi cột mốc gương mặt được tính bằng hàm mất mát MSE. Điều này có nghĩa, chuỗi hình ảnh được tạo sinh $p_{image}$ phải rút trích được một chuỗi cột mốc gương mặt sao cho giống nhất với chuỗi cột mốc gương mặt trong video gốc. Tổng hợp của giá trị mất mát MSE và Binary Cross Entropy vừa nêu, ta được hàm mất mát GANs chung của mạng GANs. Giá trị mất mát GANs này được lan truyền ngược để cập nhật trọng số cho cả mạng tạo sinh và mạng phân biệt.
 
 \subsection{Các tập dữ liệu được sử dụng}
 \subsubsection{Tập dữ liệu GRID \cite{grid}}
+
+Tập dữ liệu GRID là tập dữ liệu 
 
 \begin{figure}[H]
     \centering
@@ -49,6 +76,8 @@ Sự thay đổi của hình ảnh được quyết định phần nhiều bởi
 
 \subsection{Tiền xử lý dữ liệu}
 
+Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói của con người và muốn loại bỏ các tạp âm. Tần số âm thanh của giọng nói con người dao động trong khoảng từ 20Hz đến 20kHz, và theo như phương pháp lấy mẫu Nyquist, để lấy mẫu một tín hiệu có tần số $x$(Hz), thì bộ lấy mẫu phải lấy mẫu ở tần số $2x$(Hz). Như vậy, khi thu âm, để thu được âm thanh mà con người có thể nghe được, người ta phải lấy mẫu ở tần số 40kHz. Trên thực tế, trong việc ghi âm, người ta thường lấy mẫu ở tần số 44.1kHz, và đây đã trở thành tiêu chuẩn chung, và hầu hết các video có âm thanh thì âm thanh trong video phần lớn được lấy mẫu ở tần số này.
+
 \subsection{Cấu trúc tổng quát của hệ thống}
 
 \subsection{Cấu trúc của bộ giải mã landmark của khuôn mặt (Landmark Decoder)}
@@ -58,6 +87,8 @@ Sự thay đổi của hình ảnh được quyết định phần nhiều bởi
     \includegraphics[width=15cm]{./content/materials/landmark_decoder.png}
     \caption{Cấu trúc của bộ giải mã landmark của khuôn mặt (Landmark Decoder)}
 \end{figure}
+
+
 
 \subsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}
 
