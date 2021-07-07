@@ -1,5 +1,6 @@
 % \documentclass[14pt,a4paper]{report}
-\documentclass[11pt,a4paper]{article}
+\documentclass[13pt,a4paper]{article}
+\usepackage[fontsize=13pt]{scrextend}
 \usepackage[utf8]{inputenc}
 \usepackage[english,vietnamese]{babel}
 \usepackage[left=3.50cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
@@ -31,12 +32,23 @@
 
 \begin{document}
 
-\newgeometry{top=2cm, bottom=2cm, left=2cm, right=2cm}
+\newgeometry{left=3.0cm, right=3.0cm, top=2.00cm, bottom=2.00cm}
+\thisfancypage{%
+\setlength{\fboxsep}{10pt}\doublebox}{}
 \include{./cover/outside}
-\restoregeometry
 
+\thisfancypage{%
+\setlength{\fboxsep}{12pt}\doublebox}{}
 \include{./cover/inside}
+
+\thisfancypage{%
+\setlength{\fboxsep}{12pt}\doublebox}{}
+\include{./cover/union}
+
+\newgeometry{left=2.0cm, right=1.5cm, top=2.00cm, bottom=2.00cm}
 \include{./cover/mission}
+\restoregeometry
+\pagenumbering{roman}
 \include{./cover/thanks}
 \include{./cover/abstract}
 \include{./cover/commitment}

@@ -58,7 +58,7 @@ Hình ảnh hoàn chỉnh được tạo sinh $p_{image}$ sau đó được đem
 \subsection{Các tập dữ liệu được sử dụng}
 \subsubsection{Tập dữ liệu GRID \cite{grid}}
 
-Tập dữ liệu GRID là tập dữ liệu 
+Tập dữ liệu GRID là tập dữ liệu được tạo ra từ phòng nghiên cứu của Đại học Sheffield tại Anh. Tập dữ liệu này được tạo ra để hỗ trợ cho việc phân tích và nghiên cứu gương mặt người khi nói, bao gồm các nghiên cứu về nhận thức gương mặt thông qua giọng nói và nhận diện giọng nói. Tập dữ liệu chứa 1000 câu, được nói bởi 34 người khác nhau. Như vậy, tập dữ liệu này chứa 34000 video với chất lượng cao, mỗi video có độ dài 3 giây. Những câu được nói rất đơn giản, với cú pháp: <động từ (4 từ)> <màu sắc (4 từ)> <giới từ (4 từ)> <chữ cái (25 chữ)> <số (10 số)> <trạng từ (4 từ)>. Các cụm từ giống hệt nhau về mặt cú pháp đã nêu ở trên (ví dụ như câu "place green at B 4 now"), được phát âm rõ và đọc với tốc độ bình thường, âm thanh được thu ở môi trường kín, không nhiễu. Hình ảnh trong video rõ nét, được quay với phông nền xanh với điều kiện ánh sáng tốt. Mặt người khi nói ít chuyển động (ít xoay, ít lắc đầu) và được quay trực diện. Gương mặt người khi nói không biểu lộ cảm xúc và người nói chớp mắt một cách tự nhiên. Tập dữ liệu GRID được chia làm hai tập huấn luyện và kiểm thử. Video được chia thành 3 tập huấn luyện, tập kiểm chứng và tập kiểm thử với tỉ lệ 90\%-5\%-5\% tương ứng.
 
 \begin{figure}[H]
     \centering
@@ -68,6 +68,8 @@ Tập dữ liệu GRID là tập dữ liệu
 
 \subsubsection{Tập dữ liệu LRW \cite{lrw}}
 
+Tập dữ liệu LRW là tập dữ liệu được xây dựng bởi một nhóm nghiên cứu từ trường Đại học Oxford và sở hữu bởi hãng tin tức BBC. Đây là tập dữ liệu lớn, với những đoạn video ngắn được cắt từ những đoạn video được phát trên kênh BBC. Khác với tập dữ liệu GRID, video trong tập LRW là những video được thu trong môi trường tự nhiên. Tập dữ liệu LRW có hơn 1 triệu video khác nhau, mỗi video có độ dài 1.16 giây, gồm 29 khung hình. Những video này được chia làm 1000 từ vựng, mỗi từ vựng được nói bởi hơn 1000 người khác nhau. Tổng cộng, tập dữ liệu LRW chứa gần 1000 giờ video. Tuy nhiên, do video được cắt ghép từ video được thu trong môi trường tự nhiên, tín hiệu trong video có độ nhiễu nhất định. Âm thanh trong video có thể nghe rõ lời nói, tuy nhiên một số lượng không nhỏ video bị lẫn tiếng ồn và các tạp âm khác. Về mặt hình ảnh, video có hình ảnh rõ nét, lấy điểm trên đầu mũi của người đang nói làm trung tâm, vì vậy, với các video mà người nói có sự cử động ở đầu như xoay hay lắc đầu, video sẽ bị rung lắc mạnh để giữ điểm đầu mũi ở giữa khung hình. Mặt người trong video được quay ở nhiều vị trí khác nhau và có thể lệch về một phía (quay từ phía bên trái, bên phải, hoặc lệch theo chiều dọc gương mặt). Với mỗi từ ngữ, tập dữ liệu đã chia sẵn thành 3 tập tập huấn luyện, tập kiểm chứng và tập kiểm thử với số lượng video tương ứng cho mỗi loại là 1000-50-50.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm]{./content/materials/lrw.png}
@@ -76,11 +78,36 @@ Tập dữ liệu GRID là tập dữ liệu
 
 \subsection{Tiền xử lý dữ liệu}
 
-Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói của con người và muốn loại bỏ các tạp âm. Tần số âm thanh của giọng nói con người dao động trong khoảng từ 20Hz đến 20kHz, và theo như phương pháp lấy mẫu Nyquist, để lấy mẫu một tín hiệu có tần số $x$(Hz), thì bộ lấy mẫu phải lấy mẫu ở tần số $2x$(Hz). Như vậy, khi thu âm, để thu được âm thanh mà con người có thể nghe được, người ta phải lấy mẫu ở tần số 40kHz. Trên thực tế, trong việc ghi âm, người ta thường lấy mẫu ở tần số 44.1kHz, và đây đã trở thành tiêu chuẩn chung, và hầu hết các video có âm thanh thì âm thanh trong video phần lớn được lấy mẫu ở tần số này.
+\subsubsection{Tiền xử lý âm thanh}
+Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói của con người và muốn loại bỏ các tạp âm. Tần số âm thanh của giọng nói con người dao động trong khoảng từ 20Hz đến 20kHz, và theo như phương pháp lấy mẫu Nyquist, để lấy mẫu một tín hiệu có tần số $x$(Hz), thì bộ lấy mẫu phải lấy mẫu ở tần số ít nhất là $2x$(Hz). Như vậy, khi thu âm, để thu được âm thanh mà con người có thể nghe được, người ta phải lấy mẫu ở tần số thấp nhất là 40kHz. Trên thực tế, trong việc ghi âm, người ta thường lấy mẫu ở tần số 44.1kHz. Đây đã trở thành tiêu chuẩn chung, hầu hết các video có âm thanh thì âm thanh trong video phần lớn được lấy mẫu ở tần số này. Âm thanh trong tập dữ liệu GRID và LRW cũng được lấy mẫu ở tần số 44.1kHz.
 
-\subsection{Cấu trúc tổng quát của hệ thống}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm]{./content/materials/preprocess-audio.png}
+    \caption{Tiền xử lý tín hiệu âm thanh}
+\end{figure}
 
-\subsection{Cấu trúc của bộ giải mã landmark của khuôn mặt (Landmark Decoder)}
+Tuy nhiên, thanh quản con người chỉ có thể phát ra âm thanh với tần số dưới 4kHz. Vì vậy, để loại bỏ nhiễu ở các dãi tần số cai hơn, ta có thể lấy mẫu lại âm thanh trong video. Theo phương pháp lấy mẫu Nyquist, để lấy được âm thanh có tần số dưới 4kHz, ta cần phải lấy mẫu ở tần số 8kHz. Như vậy, tất cả âm thanh trong tất cả các đoạn video sẽ được lấy mẫu lại ở tần số 8kHz. Bộ lấy mẫu sẽ hoạt động như một bộ lọc thông thấp để loại bỏ nhiễu cao tần trong các đoạn âm thanh. Phương pháp lấy mẫu tần số thấp này cũng được dùng trong các thiết bị thu tiếng nói như máy thu âm, điện thoại để loại bỏ nhiễu.
+
+Âm thanh sau khi lấy mẫu lại sẽ được đem đi trích xuất để lấy đặc trưng MFCC. Như đã nói ở phần \ref{sec:base_knowledge_mfcc}, MFCC là đặc trưng âm thanh chỉ dành riêng cho tiếng nói của con người. Ta tiến hành lấy đặc trưng MFCC với của sổ trượt 10ms, cứ mỗi cửa sổ trượt 10ms sẽ sinh ra một véc tơ 13 chiều tương ứng với 13 quãng tần số khác nhau, tuy nhiên ta chỉ sử dụng 12 khoảng tần số đầu và loại bỏ khoảng cuối. Như vậy, với thời lượng 3 giây, âm thanh trong tập LRW sẽ sinh ra một ma trận đặc trưng MFCC có kích thước 12x300, tương tự là kích thước ma trận MFCC 12x116 của các đoạn âm thanh trong tập dữ liệu LRW.
+
+\subsubsection{Tiền xử lý hình ảnh và trích xuất cột mốc gương mặt}
+
+Đầu tiên, tất cả các khung hình của tất cả các video sẽ được nhận diện khuôn mặt bằng mô hình nhận diện khuôn mặt của thư viện Dlib. Từ khung hình đã được nhận diện khuôn mặt này, ta dễ dàng tìm được cột mốc gương mặt trên từng khung hình. Đầu tiên, ta cần tìm ra một cốt mốc gương mặt được dụng để làm chuẩn nhằm chuẩn hóa cho tất cả những cột mốc gương mặt còn lại. Cột mốc gương mặt chuẩn là cột mốc gương mặt có hình dáng chung chung của mặt người, và không có chứa đặc điểm riêng của gương mặt của bất kì người nào. Như vậy, để tìm ra cột mốc gương mặt chuẩn, ta cần tính giá trị trung bình của một số lượng lớn các cột mốc gương mặt trong các tập dữ liệu hiện có. Do tập dữ liệu LRW có độ nhiễu cao, nên ta sẽ sử dụng tập dữ liệu GRID để tính cột mốc gương mặt chuẩn. Đầu tiên, ta tính giá trị trung bình của tất cả các cột mốc gương mặt trên tất cả các khung hình của tập GRID. Sau đó, ta dùng phép biến đổi tuyến tính trên không gian hai chiều (Affine Transformation) để đưa hai điểm ở vùng ngoài của mắt (điểm 37 và 46 trên hình \ref{fig:standard_landmark}) về tọa độ $(0.3, 0.33)$ và $(0.7, 0.33)$ tương ứng.
+
+\begin{figure}[H]
+    \centering
+    \subfloat[Cột mốc gương mặt đánh số]{{\includegraphics[width=7cm]{./content/materials/enum_landmark.png} }}
+    \qquad
+    \subfloat[Cột mốc gương mặt được dùng làm chuẩn]{{\includegraphics[width=7cm]{./content/materials/standard_landmark.png} }}
+    \caption{Xử lý cột mốc gương mặt}
+    \label{fig:standard_landmark}
+\end{figure}
+
+
+\subsection{Cấu trúc chi tiết của hệ thống}
+
+\subsubsection{Cấu trúc của bộ giải mã landmark của khuôn mặt (Landmark Decoder)}
 
 \begin{figure}[H]
     \centering
@@ -90,7 +117,7 @@ Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói c
 
 
 
-\subsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}
+\subsubsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}
 
 \begin{figure}[H]
     \centering
@@ -98,7 +125,7 @@ Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói c
     \caption{Cấu trúc của bộ giải mã landmark của khuôn mặt (Generator)}
 \end{figure}
 
-\subsection{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}
+\subsubsection{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}
 
 \begin{figure}[H]
     \centering
@@ -106,4 +133,4 @@ Ta có thể thấy, phần âm thanh ta chú ý đến chỉ là tiếng nói c
     \caption{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}
 \end{figure}
 
-\subsection{Hàm mất mát được sử dụng cho hệ Generator - Discriminator}
+\subsubsection{Hàm mất mát được sử dụng cho hệ Generator - Discriminator}
