@@ -53,7 +53,17 @@ Cuối cùng, ta cần phải kết hợp hình ảnh ban đầu $i_{image}$ và
     p_{image}=p_{att}*p'_{image}+(1-p_{att})*i_{input}
 \end{equation}
 
-Hình ảnh hoàn chỉnh được tạo sinh $p_{image}$ sau đó được đem đi so sánh với chuỗi hình ảnh trong video gốc để tính giá trị mất mát L1 cho chuỗi hình ảnh tạo sinh. Giá trị mất mát này được lan truyền ngược để cập nhật các trọng số trong mạng tạo sinh. Chuỗi hình ảnh hoàn chỉnh cũng được đưa vào bộ phân biệt (Discriminator) để bộ phân biệt dự đoán xem chuỗi hình ảnh này là ảnh được tạo sinh (chuỗi hình ảnh giả) hay chuỗi hình ảnh này là hình ảnh được lấy từ tập dữ liệu thật, sai sót của bộ phân biệt được biểu diễn bằng hàm Binary Cross Entropy. Đồng thời bộ phân biệt cũng dựa vào chuỗi hình ảnh được đưa vào và cột mốc gương mặt của ảnh mẫu $l_{input}$ để cố gắng sinh ra một chuỗi cột mốc gương mặt tương ứng với chuỗi hình ảnh $p_{image}$ được đưa vào mạng. Chuỗi cột mốc gương mặt vừa được sinh ra này sẽ được so sánh với chuỗi cột mốc gương mặt được rút trích trực tiếp từ chuỗi hình ảnh trong video gốc. Sự sai khác trong hai chuỗi cột mốc gương mặt được tính bằng hàm mất mát MSE. Điều này có nghĩa, chuỗi hình ảnh được tạo sinh $p_{image}$ phải rút trích được một chuỗi cột mốc gương mặt sao cho giống nhất với chuỗi cột mốc gương mặt trong video gốc. Tổng hợp của giá trị mất mát MSE và Binary Cross Entropy vừa nêu, ta được hàm mất mát GANs chung của mạng GANs. Giá trị mất mát GANs này được lan truyền ngược để cập nhật trọng số cho cả mạng tạo sinh và mạng phân biệt.
+Hình ảnh hoàn chỉnh được tạo sinh $p_{image}$ sau đó được đem đi so sánh với chuỗi hình ảnh trong video gốc để tính giá trị mất mát L1 cho chuỗi hình ảnh tạo sinh. Giá trị mất mát này được lan truyền ngược để cập nhật các trọng số trong mạng tạo sinh. Chuỗi hình ảnh hoàn chỉnh cũng được đưa vào bộ phân biệt (Discriminator) để bộ phân biệt dự đoán xem chuỗi hình ảnh này là ảnh được tạo sinh (chuỗi hình ảnh giả) hay chuỗi hình ảnh này là hình ảnh được lấy từ tập dữ liệu thật, sai sót của bộ phân biệt được biểu diễn bằng hàm Binary Cross Entropy. Đồng thời bộ phân biệt cũng dựa vào chuỗi hình ảnh được đưa vào và cột mốc gương mặt của ảnh mẫu $l_{input}$ để cố gắng sinh ra một chuỗi cột mốc gương mặt tương ứng với chuỗi hình ảnh $p_{image}$ được đưa vào mạng. Chuỗi cột mốc gương mặt vừa được sinh ra này sẽ được so sánh với chuỗi cột mốc gương mặt được rút trích trực tiếp từ chuỗi hình ảnh trong video gốc. Sự sai khác trong hai chuỗi cột mốc gương mặt được tính bằng hàm mất mát MSE. Điều này có nghĩa, chuỗi hình ảnh được tạo sinh $p_{image}$ phải rút trích được một chuỗi cột mốc gương mặt sao cho giống nhất với chuỗi cột mốc gương mặt trong video gốc. Tổng hợp của giá trị mất mát Mean Square Error và Binary Cross Entropy vừa nêu, ta được hàm mất mát GANs chung của mạng GANs. Giá trị mất mát GANs này được lan truyền ngược để cập nhật trọng số cho cả mạng tạo sinh và mạng phân biệt.
+
+Tóm lại, việc tạo sinh hình ảnh từ đoạn âm thanh $a(t)$, hình ảnh mẫu $i_{input}$ và cột mốc gương mặt $l_{input}$ được biểu diễn dưới dạng công thức toán như sau:
+
+\begin{equation}
+    \begin{split}
+    p_{landmark}(t) &= \psi(l_{input}, mfcc(a(t)))\\
+    p'_{image}(t), p_{att} &= G(i_{input}, l_{input}, p_{landmark})\\
+    p_{image} &= p_{att}*p'_{image}+(1-p_{att})*i_{input}
+    \end{split}
+\end{equation}
 
 \subsection{Các tập dữ liệu được sử dụng}
 \subsubsection{Tập dữ liệu GRID \cite{grid}}
@@ -156,9 +166,24 @@ Cấu trúc chi tiết của mạng được thể hiện ở hình trên. Như 
 
 Cột mốc trong ảnh mẫu sau khi được chuẩn hóa sẽ được thu gọn số chiều nhờ vào giải thuật PCA. Mục đích của việc sử dụng PCA ở đây là để loại bỏ các tác động của từ chuyển động đầu của người nói. Đối với tập GRID, véc tơ $v_{input}$ có độ dài bằng 7, đổi với tập LRW, véc tơ này có độ dài bằng 8. PCA Landmark Encoder là bộ trích xuất đặc trưng dùng các lớp kết nối đầy đủ nhằm trích xuất đặc trưng của đầu vào $v_{input}$ nhằm tạo ra véc tơ $v_{landmark-encoded}$ có chiều dài 512. Véc tơ $v_{landmark-encoded}$ được nối nối tiếp với từng véc tơ $v_{mfcc}(t)$ nhằm kết hợp đặc trưng cột mốc với đặc trưng âm thanh. Tại mỗi thời điểm $t$, đặc trưng này là một véc tơ có kích thước 768 chiều. Như vậy, sau khi kết hợp hai đặc trưng này lại bằng cách nối tiếp các véc tơ, ta sẽ có tensor đặc trưng $v_{landmark-feature}$ có kích thước 1x768x(N-6) chiều. Mỗi véc tơ $v_{landmark-feature}(t)$ được đưa vào mạng LSTM theo thứ tự thời gian. Mạng LSTM là mạng có kích thước ẩn là 256. Vì vậy, với mỗi véc tơ $v_{landmark-feature}(t)$ được đưa vào mạng, ta sẽ có được một véc tơ đầu ra có chiều dài 256. Véc tơ đầu ra này được đưa vào mạng kết nối đầy đủ, với đầu ra là số chiều bằng với số chiều được dùng để lấy PCA cho $l_{input}$, với hàm kích hoạt là hàm Tanh để cho ra $v_{landmark-PCA}$. Với mỗi véc tơ $v_{landmark-PCA}(t)$, ta áp dụng phép lấy PCA ngược để tạo ra chuỗi cột mốc gương mặt $p_{landmark}$, và đây chính là chuỗi cột mốc gương mặt được dự đoán cho âm thanh ở đầu vào.
 
-Mạng giải mã cột mốc gương mặt (Landmark Decoder) được huấn luyện độc lập với các mạng còn lại do dữ liệu đã sẵn có ở đầu vào và đầu ra, cũng như để đơn giản hóa quá trình huấn luyện. Đầu ra của mạng là chuỗi các cột mốc gương mặt sẽ được dùng như đầu vào cho mạng GANs tạo sinh ảnh sẽ được nói đến trong phần tiếp theo.
+Tóm lại, mạng giải mã cột mốc được mô hình hóa bằng công thức toán như sau:
 
-\subsubsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}
+\begin{equation}
+    \begin{split}
+    v_{landmark-encoded} &= f_{landmark-encoder}(PCA(l_{input}))\\
+    v_{mfcc}(t) &= f_{mfcc-encoder}(mfcc(a_t))\\
+    v_{landmark-feature} &= LSTM(v_{landmark-encoded} \oplus v_{mfcc})\\
+    p_{landmark} &= PCA_R(\varphi_{landmark}(v_{landmark-feature}))
+    \end{split}
+\end{equation}
+
+Mạng giải mã cột mốc gương mặt (Landmark Decoder) được huấn luyện độc lập với các mạng còn lại do dữ liệu đã sẵn có ở đầu vào và đầu ra, cũng như để đơn giản hóa quá trình huấn luyện. Đầu ra của mạng là chuỗi các cột mốc gương mặt sẽ được dùng như đầu vào cho mạng GANs tạo sinh ảnh sẽ được nói đến trong phần tiếp theo. Mạng này được huấn luyện với hàm mất mát MSE truyền thống. Gọi $l_{original}$ là chuỗi cột mốc gương mặt được trích xuất từ đoạn video có chứa âm thanh được đưa vào đầu vào của mạng, hàm mất mát của mạng được biểu diễn như sau:
+
+\begin{equation}
+    Loss_{MSE} = \frac{1}{n}\sum^n_{i=1}(l_{original}-p_{landmark})^2
+\end{equation}
+
+\subsubsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}\label{sec:generator_detail}
 
 Bộ tạo sinh hình ảnh là phần quan trọng nhất trong hệ thống. Bộ tạo sinh hình ảnh (Generator) là phần tạo sinh dữ liệu trong hệ thống mạng GANs. Bộ tạo sinh hình ảnh nhận đầu vào là hình ảnh mặt người mẫu $i_{input}$, cột mốc gương mặt được trích xuất từ ảnh người mẫu $l_{input}$ và chuỗi cột mốc gương mặt được dự đoán từ âm thanh được sinh ra bởi mạng giải mã cột mốc gương mặt (Landmark Decoder). Hình ảnh người mẫu $i_{input}$ đã được chuẩn hóa các điểm ảnh sao cho giá trị của tất cả các điểm ảnh trên tất cả các kênh màu nằm trong khoảng [-1, 1], tương tự, các cột mốc gương mặt $l_{input}$ và $p_{landmark}$ đều được đưa về khoảng [-0.5, 0.5]. Đầu ra của mạng, như đã nói ở phần \ref{sec:modeling} gồm có 3 chuỗi hình ảnh có độ dài bằng nhau: $p_{att}$ là mặt nạ chú ý, cho ta biết những vùng nào trên gương mặt trong ảnh gốc cần được chỉnh sửa, $p'_{image}$ là ảnh được tạo sinh có hình dạng mặt người nhưng không được hoàn hảo, cho ta biết ta nên thay đổi hình ảnh gốc như thế nào. Và cuối cùng là chuỗi hình ảnh được tạo sinh, là sự kết hợp giữa hình ảnh gốc $i_{input}$ và ảnh tạo sinh $p'_{image}$ ở từng điểm ảnh với trọng số được quyết định bởi $p_{att}$ 
 
@@ -173,18 +198,32 @@ Hình ảnh mẫu $i_{input}$ được trích xuất đặc trưng bằng mạng
 Quay trở lại với mạng Landmark Encoder, trong quá trình tính toán ra $l_{input-feature}$ và $p_{landmark-feature}$, thì tại khối tích chập - Batchnorm - ReLU đầu tiên, mạng cũng tạo ra các đặc trưng sớm của các cột mốc gương mặt được đưa vào mạng, đó là đặc trưng $l'_{input-feature}$ được tạo ra từ $l_{input}$ và chuỗi đặc trưng $p'_{landmark-feature}$ được tạo ra từ $p_{landmark}$. Với từng tensor $p'_{landmark-feature}(t)$ tại thời điểm $t$, ta ghép nối nó với $l'_{input-feature}$ theo chiều channel để tạo ra chuỗi tensor $att'_{landmark}$. Các tensor trong chuỗi $att'_{landmark}$ chứa thông tin về cột mốc gương mặt mẫu và cột mốc gương mặt tại thời điểm $t$. Thông tin này giúp phần mạng phía sau có thêm thông tin để so sánh và tìm ra những vị trí trên gương mặt có sự thay đổi tại thời điểm $t$ so với ảnh gốc. Ta đưa chuỗi tensor $att'_{landmark}$ vào mạng Image Feature Attention, mạng này gồm 2 lớp tích chập ngược ở đầu và đầu ra là lớp tích chập với hàm kích hoạt Sigmoid. Nhờ lớp kích hoạt Sigmoid, mạng Image Feature Attention tạo ra chuỗi tensor $att_{feature}$ với các giá trị trong tensor nằm trong khoảng [0, 1]. 
 
 Lúc này, ta sẽ kết hợp các đặc trưng vừa trích xuất được để tạo ra đặc trưng hình ảnh bậc cao hơn. Chuỗi véc tơ đặc trưng hình ảnh $p_{output-feature}$ được tổng hợp với công thức:
-
 \begin{equation}
-    p_{output-feature}=i'_{image-feature}*(1-att_{feature})+p'_{movement-feature}*att_{feature}
+    \begin{split}
+    p_{output-feature}(t) = &i'_{image-feature}*(1-att_{feature}(t))+\\
+    &p'_{movement-feature}(t)*att_{feature}(t)
+    \end{split}
 \end{equation}
 
-Với $i'_{image-feature}$ là đặc trưng sớm được trích xuất từ ành mẫu $i_{image}$ sau khi qua 3 lớp tích chập đầu tiên của mạng Image Encoder. Như vậy, trong công thức này, $att_{feature}$ hoạt động như một mặt nạ chú ý ở cấp độ tensor. Mặt nạ chú ý $att_{feature}$ có chức năng lọc ra các đặc trưng chuyển động mong muốn từ $p'_{movement-feature}$, phần đặc trưng bị lọc bỏ sẽ được bù vào bởi đặc trưng hình ảnh gốc $i'_{image-feature}$. Với công thức này, chiến lược của hệ thống sẽ là lấy một phần đặc trưng của ảnh gốc, và thay thế một số thành phần trên ảnh gốc bằng các thành phần mô tả chuyển động để tạo ra ảnh mới. Chuỗi đặc trưng $p_{output-feature}$ đi qua thêm 2 lớp tích chập ngược để tăng kích thước chuỗi tensor. Tại điểm này, mỗi tensor đặc trưng cho một hình trong chuỗi có kích thước 64x128x128. Những tensor này chia thành hai hướng, một hướng đi qua mạng tích chập có ngõ ra là 3 kênh, tạo ra hình ảnh $p'_{image}$ với ba kênh màu RGB. Hướng thứ hai, chuỗi tensor đi qua một lớp tích chập có ngõ ra 1 kênh. Với hàm kích hoạt Sigmoid, mạng tích chập này tạo ra hình ảnh mặt nạ chú ý $p_{att}$. Như chiến thuật tạo sinh hình ảnh đã nói ở trên, ta kết hợp hình ảnh ban đầu $i_{image}$ với hai chuỗi hình ảnh vừa tạo ra để tạo thành chuỗi hình ảnh trên video với công thức:
-
+Với $i'_{image-feature}$ là đặc trưng sớm được trích xuất từ ành mẫu $i_{image}$ sau khi qua 3 lớp tích chập đầu tiên của mạng Image Encoder. Như vậy, trong công thức này, $att_{feature}$ hoạt động như một mặt nạ chú ý ở cấp độ tensor. Mặt nạ chú ý $att_{feature}$ có chức năng lọc ra các đặc trưng chuyển động mong muốn từ $p'_{movement-feature}$, phần đặc trưng bị lọc bỏ sẽ được bù vào bởi đặc trưng hình ảnh gốc $i'_{image-feature}$. Với công thức này, chiến lược của hệ thống sẽ là lấy một phần đặc trưng của ảnh gốc, và thay thế một số thành phần trên ảnh gốc bằng các thành phần mô tả chuyển động để tạo ra ảnh mới. Chuỗi đặc trưng $p_{output-feature}$ đi qua thêm 2 lớp tích chập ngược để tăng kích thước chuỗi tensor. Tại điểm này, mỗi tensor đặc trưng cho một hình trong chuỗi có kích thước 64x128x128. Những tensor này chia thành hai hướng, một hướng đi qua mạng tích chập có ngõ ra là 3 kênh, tạo ra hình ảnh $p'_{image}$ với ba kênh màu RGB. Hướng thứ hai, chuỗi tensor đi qua một lớp tích chập có ngõ ra 1 kênh. Với hàm kích hoạt Sigmoid, mạng tích chập này tạo ra hình ảnh mặt nạ chú ý $p_{att}$. Như chiến thuật tạo sinh hình ảnh đã nói ở trên, ta kết hợp hình ảnh ban đầu $i_{image}$ với hai chuỗi hình ảnh vừa tạo ra để tạo thành chuỗi hình ảnh trên video. Tóm lại, mạng tạo sinh được mô hình hóa bằng công thức toán như sau:
 \begin{equation}
-    p_{image}=p_{att}*p'_{image}+(1-p_{att})*i_{image}
+    \begin{split}
+    i'_{image-feature}, i_{image-feature} &= f_{image}(i_{input})\\
+    l'_{input-feature}, l_{input-feature} &= f_{landmark}(l_{input})\\
+    p'_{landmark-feature}, p_{landmark-feature} &= f_{landmark}(p_{landmark})\\
+    p'_{movement-feature}(t) &= f_{residual}(CRNN(f_{bottle}(i_{image-feature} \\
+    &\oplus (p_{landmark-feature}(t)-l_{input-feature}))))\\
+    att_{feature}(t) &= f_{att}(p'_{landmark-feature}(t) \oplus l'_{input-feature})\\
+    p_{output-feature}(t) &= i'_{image-feature}*(1-att_{feature}(t))+\\
+    &p'_{movement-feature}(t)*att_{feature}(t)\\
+    p_{att}(t), p'_{image}(t) &= f_{out}(p_{output-feature}(t))\\
+    p_{image}(t) &= p_{att}(t)*p'_{image}(t)+(1-p_{att}(t))*i_{image}
+    \end{split}
 \end{equation}
 
-\subsubsection{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}
+\subsubsection{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}\label{sec:discriminator_detail}
+
+Thành phần thứ hai trong hệ thống mạng GANs là mạng phân biệt Discriminator có chức năng phân biệt ảnh thật (hình ảnh được lấy từ video gốc) hay ảnh giả (hình ảnh được tạo sinh bởi mạng Generator). Hàm mất mát của mạng phân biệt được sử dụng để cập nhật trọng số cho chính nó và cho mạng tạo sinh. Đầu vào của mạng phân biệt là chuỗi hình ảnh được dự đoán bới mạng tạo sinh $p_{image}$ hoặc chuỗi hình ảnh thật được lấy ra từ dữ liệu huấn luyện $i_{video}$, kèm theo đó là cột mốc của gương mặt mẫu $l_{input}$. Đầu ra của mạng là nhãn cho chuỗi hình ảnh được đưa vào mạng để dự đoán xem chuỗi hình ảnh được đưa vào là hình ảnh thật hay hình ảnh được tạo sinh, đồng thời, mạng cũng tái tạo lại một chuỗi cột mốc gương mặt $p_{landmark-discriminator}$ tương ứng với chuỗi hình ảnh được đưa vào mạng.
 
 \begin{figure}[H]
     \centering
@@ -192,4 +231,71 @@ Với $i'_{image-feature}$ là đặc trưng sớm được trích xuất từ �
     \caption{Cấu trúc của bộ phân biệt hình ảnh (Discriminator)}
 \end{figure}
 
-\subsubsection{Hàm mất mát được sử dụng cho hệ Generator - Discriminator}
+Cũng như mạng tạo sinh hình ảnh, chuỗi hình ảnh đưa vào mạng được trích xuất đặc trưng bằng mạng Discriminator Image Encoder. Mạng này gồm 4 lớp tích chập và một lớp kết nối đầy đủ để biến đổi đặc trưng được trích xuất thành một véc tơ 512 chiều. Chuỗi hình ảnh trong mạng sau khi được trích xuất đặc trưng sẽ cho ra chuỗi véc tơ $v_{image-encoded}(t)$ là các véc tơ 512 chiều được sắp xếp theo thứ tự thời gian. Cột mốc gương mặt $l_{input}$ trích xuất từ hình mẫu cũng được đưa vào mạng. $l_{input}$ được duỗi thẳng thành véc tơ 136 chiều và được đưa vào mạng Discriminator Landmark Encoder. Mạng này dùng 2 lớp kết nối đầy đủ để trích xuất đặc trưng từ véc tơ cột mốc gương mặt. Đầu ra của mạng là véc tơ đặc trưng $v_{landmark-encoded}$ 512 chiều. Véc tơ đặc trưng này được ghép nối tiếp với từng véc tơ trong chuỗi $v_{image-encoded}$ để tạo thành chuỗi véc tơ 1024 chiều. Chuỗi véc tơ này được đưa qua mạng LSTM với kích thước lớp ẩn là 256 để trích xuất đặc trưng thời gian, đầu ra của mạng LSTM là chuỗi véc tơ 256 chiều $v_{landmark-movement}$. Chuỗi véc tơ này chứa đặc trưng chuyển động của ảnh theo thời gian và liên kết chuyển động đó với hình dạng cột mốc gương mặt của người mẫu. Một lớp kết nối đầy đủ với hàm kích hoạt Tanh được sử dụng để cho ra một chuỗi véc tơ 136 chiều, đây chính là chuỗi véc tơ mô tả chuyển động của cột mốc gương mặt người nói theo thời gian. Ta lần lượt cộng các chuyển động này vào cột mốc gương mặt mẫu $l_{input}$ để tìm ra được chuỗi cột mốc gương mặt $p_{landmark-discriminator}(t)$ được dự đoán cho chuỗi hình ảnh được đưa vào. Cũng trên chuỗi véc tơ chuyển động $v_{landmark-movement}$, ta cho qua mạng Aggregation bao gồm 1 lớp kết nối đầy đủ có kích thước đầu ra bằng 1 để biến đổi số chiều của véc tơ 136 chiều về 1 chiều, sau đó ta dùng lớp lấy mẫu trung bình (Average Pooling) để tính trung bình cộng theo thời gian và qua hàm kích hoạt Sigmoid để tìm ra xác suất để đánh nhãn chuỗi hình ảnh đưa vào mạng là thật hay giả. Mạng phân biệt được biễu diễn dưới dạng công thức toán như sau:
+\begin{equation}
+    \begin{split}
+    v_{image-encoded}(t) &= f_{image}(p_{image}(t)|i_{video}(t))\\
+    v_{landmark-encoded} &= f_{landmark}(l_{input})\\
+    v_{landmark-movement} &= LSTM(v_{image-encoded} \oplus v_{landmark-encoded})\\
+    p_{landmark-discriminator}(t) &= f_{embed}(v_{landmark-movement}(t) + l_{input})\\
+    p_{score} &= f_{agg}(f_{embed}(v_{landmark-movement}))
+    \end{split}
+\end{equation}
+
+\subsubsection{Hàm mất mát được sử dụng cho hệ thống mạng GANs}
+
+Từ cấu trúc chung của hệ thống được thể hiện ở hình \ref{fig:common_architecture}, ta có thể thấy, mạng GANs được sử dụng có hai nhánh hàm mất mát: hàm mất mát cho từng điểm ảnh và hàm mất mát GANs. Hàm mất mát cho từng điểm ảnh được sử dụng với mục đích huấn luyện cho mạng cách tạo ra hình ảnh giống với hình ảnh thật nhất. Như ta thấy trên hình \ref{fig:common_architecture}, mặt nạ chú ý $p_{att}$ tập trung vào những điểm có liên quan đến sự chuyển động của khuôn mặt theo âm thanh (như mắt, miệng, cằm), và bỏ qua các điểm không liên quan (tóc, mũi, phông nền,...). Như vậy, ta sẽ chú ý nhiều hơn đến những điểm được thay đổi trên khuôn mặt để cố gắng làm cho nó giống nhất với video thật. Dựa trên ý tưởng này, hàm mất mát cho từng điểm ảnh tại mạng tạo sinh có công thức:
+
+\begin{equation}
+    \mathcal{L}_{pix} = \frac{1}{T}\sum^T_{t=1}||(i_{video}(t)-p_{image}(t))*(p_{att}(t)+\beta)||_1
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item \textbf{$i_{video}(t)$}: khung hình tại thời điểm $t$ của video gốc
+    \item \textbf{$p_{image}(t)$}: hình ảnh được tạo sinh tại thời điểm $t$
+    \item \textbf{$p_{att}(t)$}: mặt nạ chú ý được dự đoán tại thời điểm $t$
+    \item \textbf{$\beta$}: một hằng số để đảm bảo tất cả các điểm trên ảnh đều được học, ta chọn $\beta = 0.5$ 
+\end{itemize}
+
+Hàm mất mát GANs trong mạng được thiết kế nhằm mục đích cố gắng làm cho hình ảnh tạo sinh khó phân biệt với hình ảnh thật nhất có thể, đồng thời cũng tạo ra những chuyển động gương mặt tương đồng với chuyển động trong video thật. Việc tạo ra hình ảnh chân thật, khó phân biệt với ảnh gốc được đảm bảo bởi hàm mất mát phân biệt sau:
+\begin{equation}
+    \begin{split}
+    \mathcal{L}_{gans-dis} = &\mathbb{E}_{l_{input},i_{video}}[logD_s(l_{input},i_{video})]\\
+    +&\mathbb{E}_{l_{input},i_{input},p_{landmark}}[log(1-D_s(l_{input},G(l_{input},i_{input},p_{landmark})))]
+    \end{split}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item \textbf{$l_{input},i_{input},p_{landmark},i_{video}$}: đã được giải thích ở các phần trên
+    \item \textbf{$D_s$}: Mạng phân biệt với đầu ra là xác suất ảnh là ảnh thật, đã được miêu tả ở phần \ref{sec:discriminator_detail}
+    \item \textbf{$G$}: Mạng tạo sinh hình ảnh được miêu tả ở phần \ref{sec:generator_detail}
+\end{itemize}
+
+Nhằm tạo ra các chuyển động gương mặt bám sát với video gốc, mạng phân biệt cũng cố gắng tái tạo lại cột mốc gương mặt rong video gốc. Hàm mất mát GANs theo cột mốc gương mặt được mô tả theo công thức sau:
+\begin{equation}
+    \begin{split}
+    \mathcal{L}_{gans-landmark} = &||(D_l(l_{input},G(l_{input},i_{input},p_{landmark})) - l_{orig})*M_l||^2_2\\
+    +&||(D_l(l_{input},i_{video}) - l_{orig})*M_l||^2_2\\
+    \end{split}
+\end{equation}
+
+Trong đó:
+\begin{itemize}
+    \item \textbf{$l_{input},i_{input},p_{landmark},i_{video}$}: đã được giải thích ở các phần trên
+    \item \textbf{$D_l$}: Mạng phân biệt với đầu ra là cột mốc gương mặt trên ảnh được tạo sinh, đã được miêu tả ở phần \ref{sec:discriminator_detail}
+    \item \textbf{$G$}: Mạng tạo sinh hình ảnh được miêu tả ở phần \ref{sec:generator_detail}
+    \item \textbf{$l_{orig}$}: Cột mốc gương mặt được trích xuất nguyên gốc từ video $i_{video}$
+    \item \textbf{$M_l$}: mặt nạ nhằm chú ý nhiều hơn vào cột mốc gương mặt vùng miệng, theo đó, sai số của cột mốc ở vùng miệng có hệ số 100, trong khi các vùng khác là 1.
+\end{itemize}
+
+Cuối cùng, các hàm mất mát trên được kết hợp để cho ra hàm mục tiêu cuối cùng. Công thức của hàm mục tiêu được biểu diễn như sau:
+\begin{equation}
+    \begin{split}
+    \mathcal{L}_{gans} = &\mathcal{L}_{gans-dis} + \mathcal{L}_{gans-landmark}\\
+    \mathcal{L} = &\mathcal{L}_{gans} + \lambda*\mathcal{L}_{pix}
+    \end{split}
+\end{equation}
+
+Theo đó, giá trị mất mát $\mathcal{L}_{pix}$ tại mạng tạo sinh được kết hợp với giá trị mất mát GANs tại mạng phân biệt $\mathcal{L}_{gans}$ để tạo ra giá trị mất mát cuối cùng $\mathcal{L}$. Mục tiêu của quá trình học là giảm tối thiểu giá trị này. Hệ số cân bằng $\lambda$ cũng được sử dụng nhằm mục đích cân bằng giữa $\mathcal{L}_{pix}$ và $\mathcal{L}_{gans}$, ta chọn giá trị này bằng 10.
