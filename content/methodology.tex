@@ -1,4 +1,4 @@
-\section{\texorpdfstring{Phương pháp nghiên cứu}{methodology}}
+\section{\texorpdfstring{Phương pháp để xuất}{methodology}}
 % Trình bày chi tiết về ý tưởng, các mô hình toán, các chứng minh nếu có. Đồng thời trình bày các bước thực hiện và khảo sát, kiểm nghiệm kết quả nghiên cứu. Mô tả kết quả nghiên cứu khi thử nghiệm với nhiều tập dữ liệu và những độ khó khác nhau.
 
 \subsection{Ý tưởng thực hiện luận văn}
@@ -181,7 +181,7 @@ Tóm lại, mạng giải mã cột mốc được mô hình hóa bằng công t
 Mạng giải mã cột mốc gương mặt (Landmark Decoder) được huấn luyện độc lập với các mạng còn lại do dữ liệu đã sẵn có ở đầu vào và đầu ra, cũng như để đơn giản hóa quá trình huấn luyện. Đầu ra của mạng là chuỗi các cột mốc gương mặt sẽ được dùng như đầu vào cho mạng GANs tạo sinh ảnh sẽ được nói đến trong phần tiếp theo. Mạng này được huấn luyện với hàm mất mát MSE truyền thống. Gọi $l_{original}$ là chuỗi cột mốc gương mặt được trích xuất từ đoạn video có chứa âm thanh được đưa vào đầu vào của mạng, hàm mất mát của mạng được biểu diễn như sau:
 
 \begin{equation}
-    Loss_{MSE} = \frac{1}{n}\sum^n_{i=1}(l_{original}-p_{landmark})^2
+    \mathcal{L}_{landmark} = \frac{1}{n}\sum^n_{i=1}(l_{original}-p_{landmark})^2
 \end{equation}
 
 \subsubsection{Cấu trúc của bộ tạo sinh hình ảnh (Generator)}\label{sec:generator_detail}

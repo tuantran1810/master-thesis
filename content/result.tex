@@ -14,6 +14,7 @@ Trong phần này, tất cả các mô hình được miêu tả đều được
     \textbf{$\mathcal{L}_{landmark}$} & \textbf{$\mathcal{L}_{pix}$} & \textbf{$\mathcal{L}_{gans-dis}$} & \textbf{$\mathcal{L}_{gans-landmark}$} & \textbf{$\mathcal{L}$}\\
     \hline
     $4.9200 \times 10^{-4}$ & $4.1575 \times 10^{-2}$ & $0.9964$ & $7.6990 \times 10^{-2}$ & $1.4892$\\
+    \hline
     \end{tabular}
     \caption{Các giá trị mất mát của mạng khi hội tụ tại vòng lặp thứ 8}
     \label{table:grid_loss}
@@ -37,13 +38,14 @@ Do tập dữ liệu có khối lượng dữ liệu lớn hơn tập GRID nhi�
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{c | c | c | c}
+    \begin{tabular}{c | c | c | c | c}
     \hline 
-    \multicolumn{4}{c}{LRW}\\
+    \multicolumn{5}{c}{LRW}\\
     \hline 
-    \textbf{$\mathcal{L}_{pix}$} & \textbf{$\mathcal{L}_{gans-dis}$} & \textbf{$\mathcal{L}_{gans-landmark}$} & \textbf{$\mathcal{L}$}\\
+    \textbf{$\mathcal{L}_{landmark}$} & \textbf{$\mathcal{L}_{pix}$} & \textbf{$\mathcal{L}_{gans-dis}$} & \textbf{$\mathcal{L}_{gans-landmark}$} & \textbf{$\mathcal{L}$}\\
     \hline
-    $6.8502 \times 10^{-2}$ & $0.6931$ & $5.2412 \times 10^{-2}$ & $1.4306$\\
+    $2.012 \times 10^{-4}$ & $6.8502 \times 10^{-2}$ & $0.6931$ & $5.2412 \times 10^{-2}$ & $1.4306$\\
+    \hline
     \end{tabular}
     \caption{Các giá trị mất mát của mạng khi hội tụ tại vòng lặp thứ 25}
     \label{table:lrw_loss}
