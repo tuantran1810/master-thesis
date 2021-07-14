@@ -1,10 +1,12 @@
 % \documentclass[14pt,a4paper]{report}
-\documentclass[13pt,a4paper]{article}
+\documentclass[a4paper,13pt]{report}
 \usepackage[fontsize=13pt]{scrextend}
+%\usepackage{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[english,vietnamese]{babel}
-\usepackage[left=3.50cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
+\usepackage[a4paper,left=3.00cm, right=2.00cm, top=3.00cm, bottom=3.00cm]{geometry}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{listings}
 \lstset{basicstyle=\ttfamily,escapechar=\@}
 \usepackage{paralist}
@@ -24,59 +26,58 @@
 \usepackage{indentfirst}
 \usepackage{pgfgantt}
 \usepackage{amsmath}
-\usepackage{fancybox}
 \usepackage{tabto}
 \usepackage{amsfonts}
-\setcounter{tocdepth}{4}
-\setcounter{secnumdepth}{4}
+\usepackage[raggedright]{titlesec}
+\usepackage{appendix}
+\usepackage {fancybox}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
 \selectlanguage{vietnamese}
 
 \begin{document}
-
+%\pagenumbering{roman}
 \newgeometry{left=3.0cm, right=3.0cm, top=2.00cm, bottom=2.00cm}
 \thisfancypage{%
 \setlength{\fboxsep}{10pt}\doublebox}{}
 \include{./cover/outside}
-
 \thisfancypage{%
 \setlength{\fboxsep}{12pt}\doublebox}{}
-\include{./cover/inside}
 
+\include{./cover/inside}
+%\include{./title/nhiemvu}
 \thisfancypage{%
 \setlength{\fboxsep}{12pt}\doublebox}{}
 \include{./cover/union}
-
 \newgeometry{left=2.0cm, right=1.5cm, top=2.00cm, bottom=2.00cm}
 \include{./cover/mission}
 \restoregeometry
 \pagenumbering{roman}
 \include{./cover/thanks}
+\include{./cover/tomtat}
 \include{./cover/abstract}
 \include{./cover/commitment}
+\restoregeometry
+\tableofcontents%\thispagestyle{plain}
+\listoffigures%\thispagestyle{plain}
+\listoftables
 
-\pagenumbering{gobble}
-\tableofcontents
-\listoffigures
-
+\newpage
 \pagenumbering{arabic}
-
-\include{./content/open}
-\include{./content/overview}
-\include{./content/target_and_mission}
-\include{./content/base_knowledge}
-\include{./content/methodology}
-\include{./content/result}
-\include{./content/conclusion}
-
-
-% \include{./content/I}
-% \include{./content/III}
-% \include{./content/IV}
-% \include{./content/V}
-% \include{./content/VI}
-% \include{./content/VII}
+\include{./content/I}
+\include{./content/II}
+\include{./content/III}
+\include{./content/IV}
+\include{./content/V}
+\include{./content/VI}
 \bibliographystyle{unsrt}
 \bibliography{references}
 \appendix
 \include{./references}
+\clearpage
+\pagenumbering{arabic}% resets `page` counter to 1
+\renewcommand*{\thepage}{\thechapter\arabic{page}}
+\appendix
+% \include{./content/appendix}
 \end{document}
