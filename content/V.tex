@@ -132,6 +132,21 @@ So sánh cột mốc gương mặt được tạo sinh (cột mốc màu đỏ) 
 
 Theo kết quả tạo sinh ta thấy, hình ảnh tạo sinh có khẩu hình miệng phù hợp với tiếng nói và gần giống với video gốc. Mặt nạ chú ý chủ yếu tập trung vào vùng mắt và miệng, trong khi các phần khác trên gương mặt và phông nền dường như không được chú ý đến. Một số video ngoài khả năng cử động miệng, có thể sinh ra hành động chớp mắt và hành động này diễn ra một cách ngẫu nhiên. Hành động chớp mắt diễn ra trong vòng 6 đến 7 khung hình, tương ứng với khoảng thời gian 240ms đến 280ms, phù hợp với hành động chớp mắt trong thực tế của con người. Trên video mô tả sự thay đổi gương mặt $p'_{image}$, chỉ có các vùng được chú ý đến mới được tạo sinh hình ảnh rõ ràng, các vùng còn lại thường sinh ra nhiễu. Điều này rất hợp lý vì trên thực tế, các vùng không được chú ý đến sẽ không đóng góp nhiều vào giá trị mất mát của mạng, nên những vùng này cũng không cần được tạo sinh một cách hoàn chỉnh.
 
+Tác giả cũng đã chạy thử để tạo sinh hình ảnh gương mặt người đang nói trong điều kiện ảnh thực tế. Hình ảnh sau là ảnh người mẫu được thử nghiệm và kết quả tạo sinh thực tế cho đoạn âm thanh với câu nói: "set red by z5 soon".
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=5cm]{./content/materials/khang.png}
+    \caption{Ảnh người mẫu trong thử nghiệm chạy thực tế}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{./content/materials/khang_gen.png}
+    \caption{Video được tạo sinh}
+\end{figure}
+
+Ta thấy mặc dù bị gây nhiễu bởi khẩu trang và kính, nhưng mô hình vẫn tạo sinh được video có chất lượng tương đối tốt và vẫn giữ nguyên được đặc trưng gương mặt người nói. Phần được chú ý chủ yếu vẫn là phần miệng, chuyển động của miệng tương đồng với từ ngữ được nói trong đoạn âm thanh.
+
 \section{Các kết quả trên tập dữ liệu LRW}
 Tiến hành các bước tạo sinh tương tự như trên tập dữ liệu GRID, ta thu được các kết quả tạo sinh cột mốc gương mặt tốt hơn so với tập GRID. Điều này đã được giải thích ở phần trên, do tập LRW là tập dữ liệu rất lớn, nên mạng có nhiều dữ liệu hơn để học về âm thanh và cột mốc gương mặt.
 
