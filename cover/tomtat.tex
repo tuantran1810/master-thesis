@@ -1,10 +1,8 @@
-\begin{titlepage}
-\begin{otherlanguage*}{vietnamese}
+\thispagestyle{plain}
+\chapter*{\centering \begin{huge}Tóm tắt\end{huge}}
 
-\begin{center}
-    \fontsize{18}{18}\textbf{TÓM TẮT}
-\end{center}
+\noindent
+%\large
+\textit{Sinh biểu cảm gương mặt dựa trên phù hợp giọng nói} là một chủ đề nghiên cứu rất nóng bỏng trong giai đoạn gần đây và có rất nhiều ứng dụng trong thực tiễn cuộc sống. Mục đích của nghiên cứu là tạo sinh được video chứa hình ảnh gương mặt người đang nói dựa vào một đoạn tiếng nói cho trước dưới dạng âm thanh. Thách thức của bài toán này là video được tạo sinh phải có khẩu hình miệng hợp với đoạn tiếng nói được cho, gương mặt người phải được tạo sinh một cách chân thật, sắc nét và giữ được nét đặc trưng của mặt người mẫu. Luận văn này đề xuất một phương pháp tạo sinh hình ảnh mặt người được kế thừa từ bài nghiên cứu \cite{chen2019}, kết hợp với phương pháp chuẩn hóa dữ liệu cột mốc gương mặt từ bài nghiên cứu \cite{gen_face_landmark} để cho ra kết quả tạo sinh hình ảnh tốt hơn. Phương pháp của bài nghiên cứu \cite{chen2019} là thiết kế một hệ thống mạng học sâu nối tiếp để tạo sinh hình ảnh. Phương pháp này sử dụng một mạng nơ ron có chức năng chuyển đổi đoạn tiếng nói được cho thành chuỗi cột mốc gương mặt biểu hiện sự chuyển động của mặt người nói theo thời gian. Nối tiếp với nó là một hệ thống mạng GANs được sử dụng để tạo sinh hình ảnh gương mặt người từ những cột mốc gương mặt được tạo ra. Ở bước tạo cột mốc gương mặt, ta áp dụng và chỉnh sửa phương pháp chuẩn hóa dữ liệu từ nghiên cứu \cite{gen_face_landmark} để hình ảnh tạo sinh có chất lượng tốt hơn, chuyển động của chuỗi hình ảnh cũng trở nên chân thật hơn. Các thử nghiệm trong luận văn được tiến hành trên các tập dữ liệu có sẵn: GRID \cite{grid} và LRW \cite{lrw}. Thử nghiệm cho thấy kết quả của nghiên cứu rất khả quan khi so sánh với các bài nghiên cứu trước đó, và đã cải thiện được chất lượng tạo sinh ảnh của nghiên cứu gốc.
 
-\end{otherlanguage*}
-\vfill
-\end{titlepage}
+\clearpage

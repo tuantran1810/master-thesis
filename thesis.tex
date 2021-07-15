@@ -63,6 +63,11 @@
 \listoffigures%\thispagestyle{plain}
 \listoftables
 
+\begin{appendices}
+    \include{./cover/abbreviation}
+    \clearpage
+\end{appendices}
+
 \newpage
 \pagenumbering{arabic}
 \include{./content/I}
@@ -79,5 +84,5 @@
 \pagenumbering{arabic}% resets `page` counter to 1
 \renewcommand*{\thepage}{\thechapter\arabic{page}}
 \appendix
-% \include{./content/appendix}
+\include{./content/background}
 \end{document}

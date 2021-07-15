@@ -1,10 +1,8 @@
-\begin{titlepage}
-\begin{otherlanguage*}{vietnamese}
+\thispagestyle{plain}
+\chapter*{\centering \begin{huge}Abstract\end{huge}}
 
-\begin{center}
-    \fontsize{18}{18}\textbf{ABSTRACT}
-\end{center}
+\noindent
+%\large
+\textit{Speech-driven facial animation} is a hot research topic in recent years since it has many applications in our real life. The aim of this problem is to generate videos that synthesize a talking face of an arbitrary person based on speech audio. It also comes with many challenges. The synthesized videos are considered high quality when the shape of mouth has high correlation with the given speech, the human face in video should be created as real as possible and identity of the person should be kept. This research proposes a method to generate facial animation from speech. Our approach inherits from this paper \cite{chen2019}, we also use the facial landmark normalization method from the paper \cite{gen_face_landmark} to improve video quality. In the paper \cite{chen2019}, they design a cascade deep learning system to effectively synthesize talking face video. This method uses a neural network to convert speech audio to a facial landmark sequence that describes face movement. In the end, they use a GANs network to generate video based on the landmark sequence that has just been created in the last step. At the step of creating a landmark sequence, we apply the normalization method from \cite{gen_face_landmark} with some modification so that it can be fitted to our system. It helps our system to create more realistic and high quality videos. All experiments in this thesis are performed on these two datasets: GRID \cite{grid} and LRW \cite{lrw}. The result shows that our approach creates videos with higher quality than the baseline method.
 
-\end{otherlanguage*}
-\vfill
-\end{titlepage}
+\clearpage
