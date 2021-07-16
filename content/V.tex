@@ -142,7 +142,7 @@ Tác giả cũng đã chạy thử để tạo sinh hình ảnh gương mặt ng
 \begin{figure}[H]
     \centering
     \includegraphics[width=16cm]{./content/materials/khang_gen.png}
-    \caption{Video được tạo sinh}
+    \caption{Video được tạo sinh bởi mô hình GRID}
 \end{figure}
 
 Ta thấy mặc dù bị gây nhiễu bởi khẩu trang và kính, nhưng mô hình vẫn tạo sinh được video có chất lượng tương đối tốt và vẫn giữ nguyên được đặc trưng gương mặt người nói. Phần được chú ý chủ yếu vẫn là phần miệng, chuyển động của miệng tương đồng với từ ngữ được nói trong đoạn âm thanh.
@@ -177,6 +177,22 @@ Hình sau thể hiện kết quả tạo sinh video khi cho mô hình tạo sinh
 \end{figure}
 
 Hình ảnh trên cho thấy, giống như trong tập dữ liệu GRID, phần mắt và miệng trên gương mặt là phần được chú ý nhiều nhất. Các phần khác của khuôn mặt trong hình  $p'_{image}$ cũng không được tạo sinh một cách hoàn chỉnh. Tuy nhiên, do tập dữ liệu LRW có góc quay rất đa dạng nên khi tạo sinh hình ảnh ở nhiều góc độ khác nhau của gương mặt, ta thấy mạng cho kết quả tốt nhất khi tạo sinh ảnh mặt người mẫu được chụp theo hướng chính diện, mặt người được chuẩn hóa tốt và lấp đầy khung hình. Cũng do sự đa dạng của góc quay trên tập LRW, mạng đã không học được cách chớp mắt như trong mô hình của tập GRID.
+
+Tác giả cũng đã thử tạo sinh video với hình ảnh thực tế trên mô hình này và mang lại kết quả khả quan. Hình ảnh người mẫu và video tạo sinh cho câu nói "set white to g2 please" được thể hiện ở hai hình sau:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=5cm]{./content/materials/eny.png}
+    \caption{Ảnh người mẫu trong thử nghiệm chạy thực tế}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=16cm]{./content/materials/eny_gen.png}
+    \caption{Video được tạo sinh bởi mô hình LRW}
+\end{figure}
+
+Qua thử nghiệm trên ta thấy, mô hình đã tạo sinh tương đối tốt hình ảnh người mẫu đang phát âm các từ ngữ trong câu. Khẩu hình miệng được tạo sinh khớp với âm thanh, mặt người mẫu không bị biến dạng và vẫn giữ được đặc trưng khuôn mặt theo thời gian. Khi thử nghiệm hình ảnh của gương mặt này trên mô hình của tập GRID, video được tạo sinh  có chất lượng không tốt, hình ảnh tạo sinh có chuyển động nhưng những chuyển động này không hợp lý. Điều này có thể giải thích là do khối lượng dữ liệu trên mô hình GRID quá ít, nên mạng chưa có đủ thông tin để tổng quát hóa bài toán cho mọi đầu vào.
 
 \section{So sánh mô hình với các nghiên cứu khác}
 
