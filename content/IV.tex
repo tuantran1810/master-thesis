@@ -1,4 +1,4 @@
-\chapter{Phương pháp để xuất}
+\chapter{Phương pháp đề xuất}
 % Trình bày chi tiết về ý tưởng, các mô hình toán, các chứng minh nếu có. Đồng thời trình bày các bước thực hiện và khảo sát, kiểm nghiệm kết quả nghiên cứu. Mô tả kết quả nghiên cứu khi thử nghiệm với nhiều tập dữ liệu và những độ khó khác nhau.
 
 \section{Ý tưởng thực hiện luận văn}
@@ -59,7 +59,7 @@ Tóm lại, việc tạo sinh hình ảnh từ đoạn âm thanh $a(t)$, hình �
 
 \begin{equation}
     \begin{split}
-    p_{landmark}(t) &= \psi(l_{input}, mfcc(a(t)))\\
+    p_{landmark}(t) &= \Psi(l_{input}, mfcc(a(t)))\\
     p'_{image}(t), p_{att} &= G(i_{input}, l_{input}, p_{landmark})\\
     p_{image} &= p_{att}*p'_{image}+(1-p_{att})*i_{input}
     \end{split}

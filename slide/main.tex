@@ -1,14 +1,24 @@
 \RequirePackage{currfile} 
 
 \documentclass[aspectratio=169]{beamer}
+\usetheme{Boadilla}
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
+}
+\setbeamertemplate{caption}[numbered]
+\usepackage{multirow}
+\usepackage{multicol}
 
-\input{preambule/special_beamer.tex}
+% \input{preambule/special_beamer.tex}
 \input{preambule/autres_packages.tex}
 \input{preambule/macros.tex}
 
 \title[Sinh biểu cảm khuôn mặt dựa trên phù hợp giọng nói]{\textbf{SINH BIỂU CẢM KHUÔN MẶT DỰA TRÊN PHÙ HỢP GIỌNG NÓI}}
 
-\author{Trần Hoàng Tuấn\inst{1}, Lê Thành Sách\inst{2}}
+\author{Trần Hoàng Tuấn\inst{1}, Nguyễn Quang Hùng\inst{2}}
 
 \institute[HCMUT]{
 \inst{1}%
@@ -30,8 +40,8 @@ Khoa học máy tính, đại học Bách Khoa thành phố Hồ Chí Minh }
 \input{slides/01_scopes}
 \input{slides/02_benefit}
 \input{slides/03_method}
-\input{slides/04_plan}
-\input{slides/05_outcome}
+\input{slides/04_experiments}
+\input{slides/05_result}
 
 \bibliographystyle{unsrt}
 \bibliography{references}
