@@ -37,6 +37,15 @@
 \selectlanguage{vietnamese}
 
 \begin{document}
+\makeatletter
+\def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
+\def\@bstctlcite[#1]#2{\@bsphack
+  \@for\@citeb:=#2\do{%
+    \edef\@citeb{\expandafter\@firstofone\@citeb}%
+    \if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
+  \@esphack}
+\makeatother
+\bstctlcite{IEEEexample:BSTcontrol}
 %\pagenumbering{roman}
 \newgeometry{left=3.0cm, right=3.0cm, top=2.00cm, bottom=2.00cm}
 \thisfancypage{%
@@ -76,9 +85,10 @@
 \include{./content/IV}
 \include{./content/V}
 \include{./content/VI}
-\bibliographystyle{unsrt}
+\bibliographystyle{IEEEtran}
 \bibliography{references}
 \appendix
+\addcontentsline{toc}{chapter}{Tài liệu tham khảo}
 \include{./references}
 \clearpage
 \pagenumbering{arabic}% resets `page` counter to 1
